@@ -2,6 +2,7 @@ package edu.northeastern.numad23sp_team27;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -36,14 +37,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void pingWebService() {
         HttpURLConnection urlConnection = null;
-        final String url_str = "http://www.android.com/";
+        final String url_str = "https://api.edamam.com";
         try {
             URL url = new URL(url_str);
             urlConnection = (HttpURLConnection) url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             readStream(in);
         } catch (Exception e) {
-
+            e.printStackTrace();
         } finally {
             if (urlConnection != null)
                 urlConnection.disconnect();
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         StringBuilder sb = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
         for (String line = br.readLine(); line != null; line = br.readLine()) {
+            Log.d("data", line);
             sb.append(line);
         }
         in.close();
