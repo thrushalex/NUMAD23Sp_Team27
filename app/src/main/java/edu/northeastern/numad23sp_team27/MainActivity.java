@@ -15,7 +15,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
+    private final static String APP_ID = "59b5d15b";
+    private final static String APP_KEY = "03b411fc092f13b052dce490b2456432";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
