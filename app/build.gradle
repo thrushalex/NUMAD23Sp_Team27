@@ -3,14 +3,6 @@ plugins {
 }
 
 android {
-    signingConfigs {
-        release {
-            storeFile file('G:\\My Drive\\Documents\\School\\2023\\CS5520\\Team27KeyStore\\team27key.jks')
-            keyAlias 'key0'
-            storePassword 'AHs%s34Vd6qPmG'
-            keyPassword 'AHs%s34Vd6qPmG'
-        }
-    }
     namespace 'edu.northeastern.numad23sp_team27'
     compileSdk 33
 
@@ -22,7 +14,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.release
     }
 
     buildTypes {
