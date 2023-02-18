@@ -28,7 +28,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
     Handler pingHandler = new Handler();
 
-    String label;
+    // String label;
 
     Button btn;
     EditText et;
@@ -59,6 +59,8 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
     class GetFromWebService implements Runnable {
         String lb;
+//        String instr = "";
+//        JSONArray listOfInstr;
 
         GetFromWebService() {}
         @Override
@@ -72,6 +74,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
             // "https://api.edamam.com/api/recipes/v2?type=public&q=chicken&app_id=59b5d15b&app_key=03b411fc092f13b052dce490b2456432"
             final String url_str = String.format("https://api.edamam.com/api/recipes/v2?type=%s&q=%s&app_id=%s&app_key=%s", "public", userInput, APP_ID, APP_KEY);
             try {
+                // int size;
                 URL url = new URL(url_str);
                 urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -86,13 +89,28 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
                 JSONObject jObject = new JSONObject(res);
                 JSONArray hits = jObject.getJSONArray("hits");
-                JSONObject recipeObj = hits.getJSONObject(0);
-                JSONObject recipe = recipeObj.getJSONObject("recipe");
-                lb = recipe.getString("label");
+                if (hits.length() < 1) {
+                    pingHandler.post(() -> {
+                        lb = String.format("No recipe found for %s", userInput);
+                        tv.setText(lb);
+                    });
+                } else {
+                    JSONObject recipeObj = hits.getJSONObject(0);
+                    JSONObject recipe = recipeObj.getJSONObject("recipe");
+                    lb = recipe.getString("label");
+//                    listOfInstr = recipe.getJSONArray("instructions");
+//
+//                    for (int i = 0; i < listOfInstr.length(); i++ ) {
+//                        String str = listOfInstr.getString(i) + "\n";
+//                        instr = instr.concat(str);
+//                    }
+//
+//                    lb = lb.concat("\n" + instr);
 
-                pingHandler.post(() -> {
-                    tv.setText(lb);
-                });
+                    pingHandler.post(() -> {
+                        tv.setText(lb);
+                    });
+                }
             } catch (Exception e) {
                 e.printStackTrace();
 
