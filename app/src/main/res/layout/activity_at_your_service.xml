@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".AtYourServiceActivity">
 
     <Button
@@ -15,22 +16,17 @@
         app:layout_constraintTop_toBottomOf="@id/userInputEditText"
         tools:layout_editor_absoluteX="161dp" />
 
-    <TextView
-        android:id="@+id/resultTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Display Result Here"
-        app:layout_constraintTop_toBottomOf="@id/pingWebServiceBtn"
-        android:layout_marginTop="10dp"/>
-
     <EditText
         android:id="@+id/userInputEditText"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_marginTop="10dp"
-        android:hint="Input Here"
         android:ems="10"
         android:gravity="start|top"
+        android:hint="Input Here"
         android:inputType="textMultiLine"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <include layout="@layout/result_content"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

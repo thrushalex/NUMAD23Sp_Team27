@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -21,10 +22,16 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class AtYourServiceActivity extends AppCompatActivity {
     private final static String APP_ID = "59b5d15b";
     private final static String APP_KEY = "03b411fc092f13b052dce490b2456432";
+
+    private RecipeListAdapter recipeListAdapter;
+    private ExpandableListView recipeExpandableListView;
+    private ArrayList<RecipeResultRow> recipeResultRowList = new ArrayList<>();
+    private ArrayList<RecipeResultRow> displayRecipeResultRowList = new ArrayList<>();
 
     Handler pingHandler = new Handler();
 
@@ -32,7 +39,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
     Button btn;
     EditText et;
-    TextView tv;
+    //TextView tv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,7 +48,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
         // get UI elements
         btn = findViewById(R.id.pingWebServiceBtn);
         et = findViewById(R.id.userInputEditText);
-        tv = findViewById(R.id.resultTextView);
+        // tv = findViewById(R.id.resultTextView);
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +56,18 @@ public class AtYourServiceActivity extends AppCompatActivity {
                 pingWebService();
             }
         });
+
+        recipeResultRowList = new ArrayList<RecipeResultRow>();
+        displayRecipeResultRowList = new ArrayList<RecipeResultRow>();
+        displayList();
+        expandAll();
+    }
+
+    public void displayList() {
+        recipeExpandableListView = (ExpandableListView) findViewById(R.id.expandableListView_search);
+        listAdapter = new recipeListAdapter(AtYourServiceActivity.this, recipeResultRowList);
+
+        myList.setAdapter(listAdapter);
     }
 
     public void pingWebService() {
@@ -92,12 +111,29 @@ public class AtYourServiceActivity extends AppCompatActivity {
                 if (hits.length() < 1) {
                     pingHandler.post(() -> {
                         lb = String.format("No recipe found for %s", userInput);
-                        tv.setText(lb);
+                        RecipeResultRow empty = new RecipeResultRow();
+                        empty.setRecipe(lb);
                     });
                 } else {
+                    /*
                     JSONObject recipeObj = hits.getJSONObject(0);
                     JSONObject recipe = recipeObj.getJSONObject("recipe");
                     lb = recipe.getString("label");
+
+                     */
+                    for(int i = 0; i < hits.length(); i++) {
+                        JSONObject recipeObject = hits.getJSONObject(i);
+                        JSONObject recipe = recipeObject.getJSONObject("recipe");
+                        JSONObject
+                    }
+
+                    for(JSON recipe: hits) {
+                        pingHandler.post(() -> {
+                            tv.setText(lb);
+                        });
+                    }
+
+
 //                    listOfInstr = recipe.getJSONArray("instructions");
 //
 //                    for (int i = 0; i < listOfInstr.length(); i++ ) {
@@ -107,9 +143,13 @@ public class AtYourServiceActivity extends AppCompatActivity {
 //
 //                    lb = lb.concat("\n" + instr);
 
+
+                    /*
                     pingHandler.post(() -> {
                         tv.setText(lb);
                     });
+
+                     */
                 }
             } catch (Exception e) {
                 e.printStackTrace();
