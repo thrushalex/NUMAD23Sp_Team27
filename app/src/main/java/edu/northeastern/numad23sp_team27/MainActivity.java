@@ -1,6 +1,7 @@
 package edu.northeastern.numad23sp_team27;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,13 +28,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        Button b = (Button) view;
-        switch(b.getId()) {
-            case R.id.atYourServiceButton:
-                //do something
-                pingWebService();
-                break;
-        }
+//        Button b = (Button) view;
+//        switch(b.getId()) {
+//            case R.id.atYourServiceButton:
+//                //do something
+//                pingWebService();
+//                break;
+//        }
+
+        openNewActivity();
+    }
+
+    public void openNewActivity() {
+        Intent intent = new Intent(this, AtYourServiceActivity.class);
+        startActivity(intent);
     }
 
     public void pingWebService() {
