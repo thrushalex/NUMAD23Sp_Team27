@@ -90,7 +90,6 @@ public class AtYourServiceActivity extends AppCompatActivity {
         recipeResultRowChild4.setRecipeResultRowText("carrots");
         recipeResultRowList.add(recipeResultRow2);
 
-        recipeResultRowList.add(recipeResultRow1);
     }
 
     private void expandAll() {
