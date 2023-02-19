@@ -126,10 +126,6 @@ public class AtYourServiceActivity extends AppCompatActivity {
             HttpURLConnection urlConnection = null;
 
             String userInput = et.getText().toString();
-            // Log.i("user_input", userInput);
-
-            // example
-            // "https://api.edamam.com/api/recipes/v2?type=public&q=chicken&app_id=59b5d15b&app_key=03b411fc092f13b052dce490b2456432"
             final String url_str = String.format("https://api.edamam.com/api/recipes/v2?type=%s&q=%s&app_id=%s&app_key=%s", "public", userInput, APP_ID, APP_KEY);
             try {
                 // int size;
@@ -158,12 +154,6 @@ public class AtYourServiceActivity extends AppCompatActivity {
                         expandAll();
                     });
                 } else {
-                    /*
-                    JSONObject recipeObj = hits.getJSONObject(0);
-                    JSONObject recipe = recipeObj.getJSONObject("recipe");
-                    lb = recipe.getString("label");
-
-                     */
                         pingHandler.post(() -> {
                             recipeResultRowList.clear();
                             for(int i = 0; i < hits.length(); i++) {
@@ -176,27 +166,16 @@ public class AtYourServiceActivity extends AppCompatActivity {
                                     recipeText = recipe.getString("label");
                                     JSONArray ingredients = recipe.getJSONArray("ingredientLines");
                                     ArrayList<RecipeResultRowChild> childArr = new ArrayList<>();
+                                    RecipeResultRow recipeResultRow = new RecipeResultRow();
+                                    recipeResultRow.setRecipe(recipeText);
                                     for (int j = 0; j < ingredients.length(); j++) {
                                         RecipeResultRowChild rc = new RecipeResultRowChild(ingredients.getString(j));
                                         childArr.add(rc);
-                                    JSONArray ingredients = null;
-                                    ingredients = recipe.getJSONArray("ingredients");
-                                    ArrayList<RecipeResultRowChild> recipeResultRowChildren = new ArrayList<>();
-                                    for(int b = 0; b < ingredients.length(); b++) {
-                                        JSONObject ingredientsJSONObject = ingredients.getJSONObject(b);
-                                        String ingredientsText = "";
-                                        ingredientsText = ingredientsJSONObject.getString("text");
-                                        RecipeResultRowChild recipeResultRowChild = new RecipeResultRowChild();
-                                        recipeResultRowChild.setRecipeResultRowText(ingredientsText);
-                                        recipeResultRowChildren.add(recipeResultRowChild);
-                                    }
-                                    RecipeResultRow recipeResultRow = new RecipeResultRow();
-                                    recipeResultRow.setRecipe(recipeText);
-                                    if(!recipeResultRowChildren.isEmpty()){
-                                        recipeResultRow.setChildList(recipeResultRowChildren);
                                     }
                                     recipeResultRowList.add(recipeResultRow);
-                                    recipeResultRow.setChildList(childArr);
+                                    if(!childArr.isEmpty()){
+                                        recipeResultRow.setChildList(childArr);
+                                    }
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
@@ -204,7 +183,6 @@ public class AtYourServiceActivity extends AppCompatActivity {
                             displayList();
                             expandAll();
                         });
-
 
 //                    listOfInstr = recipe.getJSONArray("instructions");
 //
