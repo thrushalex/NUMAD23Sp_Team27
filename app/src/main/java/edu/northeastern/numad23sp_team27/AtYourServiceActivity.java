@@ -175,16 +175,21 @@ public class AtYourServiceActivity extends AppCompatActivity {
                                     String recipeText = null;
                                     recipeText = recipe.getString("label");
                                     JSONArray ingredients = null;
-                                    ingredients = recipeObject.getJSONArray("ingredients");
+                                    ingredients = recipe.getJSONArray("ingredients");
+                                    ArrayList<RecipeResultRowChild> recipeResultRowChildren = new ArrayList<>();
                                     for(int b = 0; b < ingredients.length(); b++) {
                                         JSONObject ingredientsJSONObject = ingredients.getJSONObject(b);
                                         String ingredientsText = "";
                                         ingredientsText = ingredientsJSONObject.getString("text");
                                         RecipeResultRowChild recipeResultRowChild = new RecipeResultRowChild();
                                         recipeResultRowChild.setRecipeResultRowText(ingredientsText);
+                                        recipeResultRowChildren.add(recipeResultRowChild);
                                     }
                                     RecipeResultRow recipeResultRow = new RecipeResultRow();
                                     recipeResultRow.setRecipe(recipeText);
+                                    if(!recipeResultRowChildren.isEmpty()){
+                                        recipeResultRow.setChildList(recipeResultRowChildren);
+                                    }
                                     recipeResultRowList.add(recipeResultRow);
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
