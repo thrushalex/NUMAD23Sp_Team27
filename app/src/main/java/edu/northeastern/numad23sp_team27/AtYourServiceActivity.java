@@ -69,14 +69,17 @@ public class AtYourServiceActivity extends AppCompatActivity {
     public void loadInitData(){
         recipeResultRowList.clear();
 
+        // first level list
         RecipeResultRow recipeResultRow1 = new RecipeResultRow();
         recipeResultRow1.setRecipe("Chicken Noodle Soup");
+        // second level list
         ArrayList<RecipeResultRowChild> recipeResultRowChildren1 = new ArrayList<>();
         RecipeResultRowChild recipeResultRowChild1 = new RecipeResultRowChild();
         recipeResultRowChild1.setRecipeResultRowText("chicken");
-        recipeResultRowChildren1.add(recipeResultRowChild1);
         RecipeResultRowChild recipeResultRowChild2 = new RecipeResultRowChild();
         recipeResultRowChild2.setRecipeResultRowText("carrots");
+        recipeResultRowChildren1.add(recipeResultRowChild1);
+        recipeResultRowChildren1.add(recipeResultRowChild2);
         recipeResultRow1.setChildList(recipeResultRowChildren1);
         recipeResultRowList.add(recipeResultRow1);
 
@@ -107,13 +110,10 @@ public class AtYourServiceActivity extends AppCompatActivity {
         recipeExpandableListView.setAdapter(recipeListAdapter);
     }
 
-
-
     public void pingWebService() {
         Thread pingT = new Thread(new GetFromWebService());
         pingT.start();
     }
-
 
     class GetFromWebService implements Runnable {
         String lb;
@@ -174,9 +174,16 @@ public class AtYourServiceActivity extends AppCompatActivity {
                                     recipe = recipeObject.getJSONObject("recipe");
                                     String recipeText = null;
                                     recipeText = recipe.getString("label");
+                                    JSONArray ingredients = recipe.getJSONArray("ingredientLines");
+                                    ArrayList<RecipeResultRowChild> childArr = new ArrayList<>();
+                                    for (int j = 0; j < ingredients.length(); j++) {
+                                        RecipeResultRowChild rc = new RecipeResultRowChild(ingredients.getString(j));
+                                        childArr.add(rc);
+                                    }
                                     RecipeResultRow recipeResultRow = new RecipeResultRow();
                                     recipeResultRow.setRecipe(recipeText);
                                     recipeResultRowList.add(recipeResultRow);
+                                    recipeResultRow.setChildList(childArr);
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
