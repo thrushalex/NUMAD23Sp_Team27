@@ -2,10 +2,12 @@ package edu.northeastern.numad23sp_team27;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -55,6 +57,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                closeKeyboard();
                 pingWebService();
             }
         });
@@ -64,6 +67,14 @@ public class AtYourServiceActivity extends AppCompatActivity {
         loadInitData();
         displayList();
         expandAll();
+    }
+
+    public void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     public void loadInitData(){
@@ -181,7 +192,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
                                 }
                             }
                             displayList();
-                            expandAll();
+                            //expandAll();
                         });
 
 //                    listOfInstr = recipe.getJSONArray("instructions");
