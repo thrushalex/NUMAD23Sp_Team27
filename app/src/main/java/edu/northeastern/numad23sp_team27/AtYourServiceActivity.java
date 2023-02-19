@@ -81,15 +81,14 @@ public class AtYourServiceActivity extends AppCompatActivity {
         recipeResultRowList.add(recipeResultRow1);
 
         RecipeResultRow recipeResultRow2 = new RecipeResultRow();
-        recipeResultRowChildren1.add(recipeResultRowChild1);
-        recipeResultRow1.setRecipe("Chicken Noodle Soup");
+        recipeResultRow2.setRecipe("Chicken Alfredo");
         ArrayList<RecipeResultRowChild> recipeResultRowChildren2 = new ArrayList<>();
         RecipeResultRowChild recipeResultRowChild3 = new RecipeResultRowChild();
         recipeResultRowChild3.setRecipeResultRowText("chicken");
         recipeResultRowChildren2.add(recipeResultRowChild3);
         RecipeResultRowChild recipeResultRowChild4 = new RecipeResultRowChild();
         recipeResultRowChild4.setRecipeResultRowText("carrots");
-        recipeResultRow1.setChildList(recipeResultRowChildren2);
+        recipeResultRow2.setChildList(recipeResultRowChildren2);
         recipeResultRowList.add(recipeResultRow2);
 
     }
