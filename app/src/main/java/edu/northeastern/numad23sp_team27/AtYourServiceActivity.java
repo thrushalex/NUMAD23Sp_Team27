@@ -120,9 +120,11 @@ public class AtYourServiceActivity extends AppCompatActivity {
                 JSONArray hits = jObject.getJSONArray("hits");
                 if (hits.length() < 1) {
                     pingHandler.post(() -> {
+                        recipeResultRowList.clear();
                         lb = String.format("No recipe found for %s", userInput);
                         RecipeResultRow empty = new RecipeResultRow();
                         empty.setRecipe(lb);
+                        recipeResultRowList.add(empty);
                         displayList();
                         expandAll();
                     });
@@ -134,6 +136,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
                      */
                         pingHandler.post(() -> {
+                            recipeResultRowList.clear();
                             for(int i = 0; i < hits.length(); i++) {
                                 JSONObject recipeObject = null;;
                                 try {
@@ -144,6 +147,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
                                     recipeText = recipe.getString("label");
                                     RecipeResultRow recipeResultRow = new RecipeResultRow();
                                     recipeResultRow.setRecipe(recipeText);
+                                    recipeResultRowList.add(recipeResultRow);
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
