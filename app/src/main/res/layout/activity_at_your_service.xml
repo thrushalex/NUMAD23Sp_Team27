@@ -2,36 +2,47 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context=".AtYourServiceActivity">
 
     <EditText
         android:id="@+id/userInputEditText"
-        android:layout_width="409dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:ems="10"
         android:gravity="start|top"
         android:hint="Input Here"
         android:inputType="textMultiLine"
+        app:layout_constraintBottom_toTopOf="@+id/pingWebServiceBtn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.5"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
         android:id="@+id/pingWebServiceBtn"
-        android:layout_width="409dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="407dp"
         android:layout_height="wrap_content"
         android:text="@string/btnPingWebService"
+        app:layout_constraintBottom_toTopOf="@+id/include"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userInputEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/userInputEditText"
+        app:layout_constraintVertical_bias="0.5" />
 
     <include
         android:id="@+id/include"
         layout="@layout/result_content"
-        android:layout_width="0dp"
+        android:layout_width="405dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

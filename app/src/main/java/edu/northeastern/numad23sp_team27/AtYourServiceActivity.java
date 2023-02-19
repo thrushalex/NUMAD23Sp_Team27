@@ -179,9 +179,22 @@ public class AtYourServiceActivity extends AppCompatActivity {
                                     for (int j = 0; j < ingredients.length(); j++) {
                                         RecipeResultRowChild rc = new RecipeResultRowChild(ingredients.getString(j));
                                         childArr.add(rc);
+                                    JSONArray ingredients = null;
+                                    ingredients = recipe.getJSONArray("ingredients");
+                                    ArrayList<RecipeResultRowChild> recipeResultRowChildren = new ArrayList<>();
+                                    for(int b = 0; b < ingredients.length(); b++) {
+                                        JSONObject ingredientsJSONObject = ingredients.getJSONObject(b);
+                                        String ingredientsText = "";
+                                        ingredientsText = ingredientsJSONObject.getString("text");
+                                        RecipeResultRowChild recipeResultRowChild = new RecipeResultRowChild();
+                                        recipeResultRowChild.setRecipeResultRowText(ingredientsText);
+                                        recipeResultRowChildren.add(recipeResultRowChild);
                                     }
                                     RecipeResultRow recipeResultRow = new RecipeResultRow();
                                     recipeResultRow.setRecipe(recipeText);
+                                    if(!recipeResultRowChildren.isEmpty()){
+                                        recipeResultRow.setChildList(recipeResultRowChildren);
+                                    }
                                     recipeResultRowList.add(recipeResultRow);
                                     recipeResultRow.setChildList(childArr);
                                 } catch (JSONException e) {
