@@ -36,12 +36,8 @@ public class AtYourServiceActivity extends AppCompatActivity {
     private ArrayList<RecipeResultRow> displayRecipeResultRowList = new ArrayList<>();
 
     Handler pingHandler = new Handler();
-
-    // String label;
-
     Button btn;
     EditText et;
-    //TextView tv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,42 +57,13 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
         recipeResultRowList = new ArrayList<RecipeResultRow>();
         displayRecipeResultRowList = new ArrayList<RecipeResultRow>();
-        loadInitData();
         displayList();
         expandAll();
-    }
-
-    public void loadInitData(){
-        recipeResultRowList.clear();
-
-        RecipeResultRow recipeResultRow1 = new RecipeResultRow();
-        recipeResultRow1.setRecipe("Chicken Noodle Soup");
-        ArrayList<RecipeResultRowChild> recipeResultRowChildren1 = new ArrayList<>();
-        RecipeResultRowChild recipeResultRowChild1 = new RecipeResultRowChild();
-        recipeResultRowChild1.setRecipeResultRowText("chicken");
-        recipeResultRowChildren1.add(recipeResultRowChild1);
-        RecipeResultRowChild recipeResultRowChild2 = new RecipeResultRowChild();
-        recipeResultRowChild2.setRecipeResultRowText("carrots");
-        recipeResultRow1.setChildList(recipeResultRowChildren1);
-        recipeResultRowList.add(recipeResultRow1);
-
-        RecipeResultRow recipeResultRow2 = new RecipeResultRow();
-        recipeResultRow2.setRecipe("Chicken Alfredo");
-        ArrayList<RecipeResultRowChild> recipeResultRowChildren2 = new ArrayList<>();
-        RecipeResultRowChild recipeResultRowChild3 = new RecipeResultRowChild();
-        recipeResultRowChild3.setRecipeResultRowText("chicken");
-        recipeResultRowChildren2.add(recipeResultRowChild3);
-        RecipeResultRowChild recipeResultRowChild4 = new RecipeResultRowChild();
-        recipeResultRowChild4.setRecipeResultRowText("carrots");
-        recipeResultRow2.setChildList(recipeResultRowChildren2);
-        recipeResultRowList.add(recipeResultRow2);
-
     }
 
     private void expandAll() {
         int count = recipeListAdapter.getGroupCount();
         for (int i = 0; i < count; i++) {
-            //recipeListAdapter.onGroupExpanded(i);
             recipeExpandableListView.expandGroup(i);
         } //end for (int i = 0; i < count; i++)
     }
@@ -117,8 +84,6 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
     class GetFromWebService implements Runnable {
         String lb;
-//        String instr = "";
-//        JSONArray listOfInstr;
 
         GetFromWebService() {}
         @Override
@@ -126,13 +91,8 @@ public class AtYourServiceActivity extends AppCompatActivity {
             HttpURLConnection urlConnection = null;
 
             String userInput = et.getText().toString();
-            // Log.i("user_input", userInput);
-
-            // example
-            // "https://api.edamam.com/api/recipes/v2?type=public&q=chicken&app_id=59b5d15b&app_key=03b411fc092f13b052dce490b2456432"
             final String url_str = String.format("https://api.edamam.com/api/recipes/v2?type=%s&q=%s&app_id=%s&app_key=%s", "public", userInput, APP_ID, APP_KEY);
             try {
-                // int size;
                 URL url = new URL(url_str);
                 urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -143,7 +103,6 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 String res = readStream(in);
-                // Log.i("res", res);
 
                 JSONObject jObject = new JSONObject(res);
                 JSONArray hits = jObject.getJSONArray("hits");
@@ -158,12 +117,6 @@ public class AtYourServiceActivity extends AppCompatActivity {
                         expandAll();
                     });
                 } else {
-                    /*
-                    JSONObject recipeObj = hits.getJSONObject(0);
-                    JSONObject recipe = recipeObj.getJSONObject("recipe");
-                    lb = recipe.getString("label");
-
-                     */
                         pingHandler.post(() -> {
                             recipeResultRowList.clear();
                             for(int i = 0; i < hits.length(); i++) {
@@ -199,23 +152,6 @@ public class AtYourServiceActivity extends AppCompatActivity {
                             expandAll();
                         });
 
-
-//                    listOfInstr = recipe.getJSONArray("instructions");
-//
-//                    for (int i = 0; i < listOfInstr.length(); i++ ) {
-//                        String str = listOfInstr.getString(i) + "\n";
-//                        instr = instr.concat(str);
-//                    }
-//
-//                    lb = lb.concat("\n" + instr);
-
-
-                    /*
-                    pingHandler.post(() -> {
-                        tv.setText(lb);
-                    });
-
-                     */
                 }
             } catch (Exception e) {
                 e.printStackTrace();

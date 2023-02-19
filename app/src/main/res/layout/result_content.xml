@@ -13,9 +13,10 @@
     tools:showIn="@layout/activity_at_your_service">
 
     <ExpandableListView
+        android:id="@+id/exapandableRecipeListView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
-        android:id="@+id/exapandableRecipeListView"/>
+        android:transcriptMode="alwaysScroll" />
 
 </RelativeLayout>
