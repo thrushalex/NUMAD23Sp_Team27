@@ -12,6 +12,7 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -63,12 +64,20 @@ public class AtYourServiceActivity extends AppCompatActivity {
         expandAll();
     }
 
-    public void displayList() {
-        recipeExpandableListView = (ExpandableListView) findViewById(R.id.expandableListView_search);
-        listAdapter = new recipeListAdapter(AtYourServiceActivity.this, recipeResultRowList);
-
-        myList.setAdapter(listAdapter);
+    private void expandAll() {
+        int count = recipeListAdapter.getGroupCount();
+        for (int i = 0; i < count; i++) {
+            recipeListAdapter.onGroupExpanded(i);
+        } //end for (int i = 0; i < count; i++)
     }
+
+    public void displayList() {
+        recipeExpandableListView = (ExpandableListView) findViewById(R.id.exapandableRecipeListView);
+        recipeListAdapter = new RecipeListAdapter(AtYourServiceActivity.this, recipeResultRowList);
+        recipeExpandableListView.setAdapter(recipeListAdapter);
+    }
+
+
 
     public void pingWebService() {
         Thread pingT = new Thread(new GetFromWebService());
@@ -113,6 +122,8 @@ public class AtYourServiceActivity extends AppCompatActivity {
                         lb = String.format("No recipe found for %s", userInput);
                         RecipeResultRow empty = new RecipeResultRow();
                         empty.setRecipe(lb);
+                        displayList();
+                        expandAll();
                     });
                 } else {
                     /*
@@ -121,17 +132,32 @@ public class AtYourServiceActivity extends AppCompatActivity {
                     lb = recipe.getString("label");
 
                      */
-                    for(int i = 0; i < hits.length(); i++) {
-                        JSONObject recipeObject = hits.getJSONObject(i);
-                        JSONObject recipe = recipeObject.getJSONObject("recipe");
-                        JSONObject
-                    }
-
-                    for(JSON recipe: hits) {
                         pingHandler.post(() -> {
-                            tv.setText(lb);
+                            for(int i = 0; i < hits.length(); i++) {
+                                JSONObject recipeObject = null;
+                                try {
+                                    recipeObject = hits.getJSONObject(i);
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                JSONObject recipe = null;
+                                try {
+                                    recipe = recipeObject.getJSONObject("recipe");
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                String recipeText = null;
+                                try {
+                                    recipeText = recipe.getString("label");
+                                } catch (JSONException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                RecipeResultRow recipeResultRow = new RecipeResultRow();
+                                recipeResultRow.setRecipe(recipeText);
+                            }
+                            displayList();
+                            expandAll();
                         });
-                    }
 
 
 //                    listOfInstr = recipe.getJSONArray("instructions");
@@ -153,10 +179,12 @@ public class AtYourServiceActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-
-                lb = "something went wrong";
                 pingHandler.post(() -> {
-                    tv.setText(lb);
+                    String error = "something went wrong";
+                    RecipeResultRow empty = new RecipeResultRow();
+                    empty.setRecipe(error);
+                    displayList();
+                    expandAll();
                 });
 
             } finally {
