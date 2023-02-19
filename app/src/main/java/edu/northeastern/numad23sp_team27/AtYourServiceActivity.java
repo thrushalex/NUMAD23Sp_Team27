@@ -61,6 +61,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
         recipeResultRowList = new ArrayList<RecipeResultRow>();
         displayRecipeResultRowList = new ArrayList<RecipeResultRow>();
+        loadInitData();
         displayList();
         expandAll();
     }
