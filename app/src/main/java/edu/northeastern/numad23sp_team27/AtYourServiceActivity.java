@@ -31,7 +31,7 @@ import java.util.List;
 public class AtYourServiceActivity extends AppCompatActivity {
     private final static String APP_ID = "59b5d15b";
     private final static String APP_KEY = "03b411fc092f13b052dce490b2456432";
-
+    private final static String RECIPE_KEY = "recipe name";
     private RecipeListAdapter recipeListAdapter;
     private ExpandableListView recipeExpandableListView;
     private List<RecipeResultRow> recipeResultRowList = new ArrayList<>();
@@ -64,12 +64,19 @@ public class AtYourServiceActivity extends AppCompatActivity {
         //loadInitData();
         //displayList();
         //expandAll();
+
+        if (savedInstanceState != null) {
+            recipeResultRowList = savedInstanceState.getParcelableArrayList(RECIPE_KEY);
+            displayList();
+        }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        //
+        // save data before orientation change
+        ArrayList<RecipeResultRow> rl = new ArrayList<>(recipeResultRowList);
+        outState.putParcelableArrayList(RECIPE_KEY, rl);
     }
 
     public void closeKeyboard() {

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class RecipeResultRow implements Parcelable {
     private String recipe;
-    private List<RecipeResultRowChild> RecipeResultRowChildren = new ArrayList<>();
+    private List<RecipeResultRowChild> RecipeResultRowChildren;
 
     protected RecipeResultRow(Parcel in) {
         recipe = in.readString();
@@ -54,7 +54,6 @@ public class RecipeResultRow implements Parcelable {
     public RecipeResultRow(String recipe, List<RecipeResultRowChild> RecipeResultRowChildren) {
         this.recipe = recipe;
         this.RecipeResultRowChildren = RecipeResultRowChildren;
-
     }
 
     @Override
