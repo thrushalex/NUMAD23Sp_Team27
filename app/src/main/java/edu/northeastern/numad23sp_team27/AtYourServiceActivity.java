@@ -67,7 +67,8 @@ public class AtYourServiceActivity extends AppCompatActivity {
     private void expandAll() {
         int count = recipeListAdapter.getGroupCount();
         for (int i = 0; i < count; i++) {
-            recipeListAdapter.onGroupExpanded(i);
+            //recipeListAdapter.onGroupExpanded(i);
+            recipeExpandableListView.expandGroup(i);
         } //end for (int i = 0; i < count; i++)
     }
 
@@ -134,26 +135,18 @@ public class AtYourServiceActivity extends AppCompatActivity {
                      */
                         pingHandler.post(() -> {
                             for(int i = 0; i < hits.length(); i++) {
-                                JSONObject recipeObject = null;
+                                JSONObject recipeObject = null;;
                                 try {
                                     recipeObject = hits.getJSONObject(i);
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                JSONObject recipe = null;
-                                try {
+                                    JSONObject recipe = null;
                                     recipe = recipeObject.getJSONObject("recipe");
-                                } catch (JSONException e) {
-                                    throw new RuntimeException(e);
-                                }
-                                String recipeText = null;
-                                try {
+                                    String recipeText = null;
                                     recipeText = recipe.getString("label");
+                                    RecipeResultRow recipeResultRow = new RecipeResultRow();
+                                    recipeResultRow.setRecipe(recipeText);
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
-                                RecipeResultRow recipeResultRow = new RecipeResultRow();
-                                recipeResultRow.setRecipe(recipeText);
                             }
                             displayList();
                             expandAll();
