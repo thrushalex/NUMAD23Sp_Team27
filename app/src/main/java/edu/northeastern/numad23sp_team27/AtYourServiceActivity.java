@@ -50,6 +50,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
         setContentView(R.layout.activity_at_your_service);
 
         // get UI elements
+        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
         btn = findViewById(R.id.pingWebServiceBtn);
         et = findViewById(R.id.userInputEditText);
         // tv = findViewById(R.id.resultTextView);
@@ -133,7 +134,9 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
     public void pingWebService() {
         Thread pingT = new Thread(new GetFromWebService());
+        //findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
         pingT.start();
+        //findViewById(R.id.loadingPanel).setVisibility(View.GONE);
     }
 
     class GetFromWebService implements Runnable {
@@ -152,12 +155,13 @@ public class AtYourServiceActivity extends AppCompatActivity {
                 // int size;
                 URL url = new URL(url_str);
                 urlConnection = (HttpURLConnection) url.openConnection();
-
+                pingHandler.post(() -> {
+                    findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
+                });
                 int code = urlConnection.getResponseCode();
                 if (code !=  200) {
                     throw new IOException("Invalid response from server: " + code);
                 }
-
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 String res = readStream(in);
                 // Log.i("res", res);
@@ -222,6 +226,9 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
                      */
                 }
+                pingHandler.post(() -> {
+                    findViewById(R.id.loadingPanel).setVisibility(View.GONE);
+                });
             } catch (Exception e) {
                 e.printStackTrace();
                 pingHandler.post(() -> {

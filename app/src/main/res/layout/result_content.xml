@@ -12,6 +12,18 @@
     tools:context="edu.northeastern.numad23sp_team27.AtYourServiceActivity"
     tools:showIn="@layout/activity_at_your_service">
 
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center" >
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
+    </RelativeLayout>
+
     <ExpandableListView
         android:id="@+id/exapandableRecipeListView"
         android:layout_width="match_parent"
