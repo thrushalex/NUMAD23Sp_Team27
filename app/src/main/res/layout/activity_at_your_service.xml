@@ -7,26 +7,29 @@
     android:fitsSystemWindows="true"
     tools:context=".AtYourServiceActivity">
 
-    <Button
-        android:id="@+id/pingWebServiceBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="@string/btnPingWebService"
-        app:layout_constraintTop_toBottomOf="@id/userInputEditText"
-        tools:layout_editor_absoluteX="161dp" />
-
     <EditText
         android:id="@+id/userInputEditText"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="10dp"
+        android:layout_height="wrap_content"
         android:ems="10"
         android:gravity="start|top"
         android:hint="Input Here"
         android:inputType="textMultiLine"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <include layout="@layout/result_content"/>
+    <Button
+        android:id="@+id/pingWebServiceBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btnPingWebService"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userInputEditText" />
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/result_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pingWebServiceBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
