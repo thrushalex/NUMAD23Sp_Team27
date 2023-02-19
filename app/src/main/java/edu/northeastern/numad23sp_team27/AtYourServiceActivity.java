@@ -35,7 +35,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
     private RecipeListAdapter recipeListAdapter;
     private ExpandableListView recipeExpandableListView;
     private List<RecipeResultRow> recipeResultRowList = new ArrayList<>();
-    private List<RecipeResultRow> displayRecipeResultRowList = new ArrayList<>();
+    //private List<RecipeResultRow> displayRecipeResultRowList = new ArrayList<>();
 
     Handler pingHandler = new Handler();
 
@@ -61,11 +61,6 @@ public class AtYourServiceActivity extends AppCompatActivity {
         });
 
         recipeResultRowList = new ArrayList<>();
-        displayRecipeResultRowList = new ArrayList<>();
-        //loadInitData();
-        //displayList();
-        //expandAll();
-
         if (savedInstanceState != null) {
             recipeResultRowList = savedInstanceState.getParcelableArrayList(RECIPE_KEY);
             displayList();
@@ -88,36 +83,6 @@ public class AtYourServiceActivity extends AppCompatActivity {
         }
     }
 
-    public void loadInitData(){
-        recipeResultRowList.clear();
-
-        // first level list
-        RecipeResultRow recipeResultRow1 = new RecipeResultRow();
-        recipeResultRow1.setRecipe("Chicken Noodle Soup");
-        // second level list
-        ArrayList<RecipeResultRowChild> recipeResultRowChildren1 = new ArrayList<>();
-        RecipeResultRowChild recipeResultRowChild1 = new RecipeResultRowChild();
-        recipeResultRowChild1.setRecipeResultRowText("chicken");
-        RecipeResultRowChild recipeResultRowChild2 = new RecipeResultRowChild();
-        recipeResultRowChild2.setRecipeResultRowText("carrots");
-        recipeResultRowChildren1.add(recipeResultRowChild1);
-        recipeResultRowChildren1.add(recipeResultRowChild2);
-        recipeResultRow1.setChildList(recipeResultRowChildren1);
-        recipeResultRowList.add(recipeResultRow1);
-
-        RecipeResultRow recipeResultRow2 = new RecipeResultRow();
-        recipeResultRow2.setRecipe("Chicken Alfredo");
-        ArrayList<RecipeResultRowChild> recipeResultRowChildren2 = new ArrayList<>();
-        RecipeResultRowChild recipeResultRowChild3 = new RecipeResultRowChild();
-        recipeResultRowChild3.setRecipeResultRowText("chicken");
-        recipeResultRowChildren2.add(recipeResultRowChild3);
-        RecipeResultRowChild recipeResultRowChild4 = new RecipeResultRowChild();
-        recipeResultRowChild4.setRecipeResultRowText("carrots");
-        recipeResultRow2.setChildList(recipeResultRowChildren2);
-        recipeResultRowList.add(recipeResultRow2);
-
-    }
-
     private void expandAll() {
         int count = recipeListAdapter.getGroupCount();
         for (int i = 0; i < count; i++) {
@@ -134,16 +99,11 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
     public void pingWebService() {
         Thread pingT = new Thread(new GetFromWebService());
-        //findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
         pingT.start();
-        //findViewById(R.id.loadingPanel).setVisibility(View.GONE);
     }
 
     class GetFromWebService implements Runnable {
         String lb;
-//        String instr = "";
-//        JSONArray listOfInstr;
-
         GetFromWebService() {}
         @Override
         public void run() {
@@ -155,16 +115,13 @@ public class AtYourServiceActivity extends AppCompatActivity {
                 // int size;
                 URL url = new URL(url_str);
                 urlConnection = (HttpURLConnection) url.openConnection();
-                pingHandler.post(() -> {
-                    findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE);
-                });
+                pingHandler.post(() -> findViewById(R.id.loadingPanel).setVisibility(View.VISIBLE));
                 int code = urlConnection.getResponseCode();
                 if (code !=  200) {
                     throw new IOException("Invalid response from server: " + code);
                 }
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 String res = readStream(in);
-                // Log.i("res", res);
 
                 JSONObject jObject = new JSONObject(res);
                 JSONArray hits = jObject.getJSONArray("hits");
@@ -206,29 +163,9 @@ public class AtYourServiceActivity extends AppCompatActivity {
                                 }
                             }
                             displayList();
-                            //expandAll();
                         });
-
-//                    listOfInstr = recipe.getJSONArray("instructions");
-//
-//                    for (int i = 0; i < listOfInstr.length(); i++ ) {
-//                        String str = listOfInstr.getString(i) + "\n";
-//                        instr = instr.concat(str);
-//                    }
-//
-//                    lb = lb.concat("\n" + instr);
-
-
-                    /*
-                    pingHandler.post(() -> {
-                        tv.setText(lb);
-                    });
-
-                     */
                 }
-                pingHandler.post(() -> {
-                    findViewById(R.id.loadingPanel).setVisibility(View.GONE);
-                });
+                pingHandler.post(() -> findViewById(R.id.loadingPanel).setVisibility(View.GONE));
             } catch (Exception e) {
                 e.printStackTrace();
                 pingHandler.post(() -> {
