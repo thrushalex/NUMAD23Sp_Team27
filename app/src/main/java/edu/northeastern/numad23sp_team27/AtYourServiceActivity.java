@@ -24,6 +24,7 @@ import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class AtYourServiceActivity extends AppCompatActivity {
     private final static String APP_ID = "59b5d15b";
@@ -62,6 +63,33 @@ public class AtYourServiceActivity extends AppCompatActivity {
         displayRecipeResultRowList = new ArrayList<RecipeResultRow>();
         displayList();
         expandAll();
+    }
+
+    public void loadInitData(){
+        recipeResultRowList.clear();
+
+        RecipeResultRow recipeResultRow1 = new RecipeResultRow();
+        recipeResultRow1.setRecipe("Chicken Noodle Soup");
+        List<RecipeResultRowChild> recipeResultRowChildren1 = new ArrayList<>();
+        RecipeResultRowChild recipeResultRowChild1 = new RecipeResultRowChild();
+        recipeResultRowChild1.setRecipeResultRowText("chicken");
+        recipeResultRowChildren1.add(recipeResultRowChild1);
+        RecipeResultRowChild recipeResultRowChild2 = new RecipeResultRowChild();
+        recipeResultRowChild2.setRecipeResultRowText("carrots");
+        recipeResultRowList.add(recipeResultRow1);
+
+        RecipeResultRow recipeResultRow2 = new RecipeResultRow();
+        recipeResultRowChildren1.add(recipeResultRowChild1);
+        recipeResultRow1.setRecipe("Chicken Noodle Soup");
+        List<RecipeResultRowChild> recipeResultRowChildren2 = new ArrayList<>();
+        RecipeResultRowChild recipeResultRowChild3 = new RecipeResultRowChild();
+        recipeResultRowChild3.setRecipeResultRowText("chicken");
+        recipeResultRowChildren2.add(recipeResultRowChild3);
+        RecipeResultRowChild recipeResultRowChild4 = new RecipeResultRowChild();
+        recipeResultRowChild4.setRecipeResultRowText("carrots");
+        recipeResultRowList.add(recipeResultRow2);
+
+        recipeResultRowList.add(recipeResultRow1);
     }
 
     private void expandAll() {
