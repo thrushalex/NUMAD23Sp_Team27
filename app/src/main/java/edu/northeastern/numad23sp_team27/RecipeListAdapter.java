@@ -70,8 +70,11 @@ public class RecipeListAdapter extends BaseExpandableListAdapter {
         }
 
         TextView heading = (TextView) convertView.findViewById(R.id.result_row_text);
-
-        heading.setText(recipeResultRow.getRecipe().trim());
+        String headingText = recipeResultRow.getRecipe().trim();
+        if(headingText == null || headingText == "") {
+            headingText = "N/A";
+        }
+        heading.setText(headingText.trim());
 
         return convertView;
     }

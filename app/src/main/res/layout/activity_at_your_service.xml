@@ -27,6 +27,6 @@
         android:inputType="textMultiLine"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <include layout="@layout/result_content"/>
+    <include layout="@layout/result_content" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
