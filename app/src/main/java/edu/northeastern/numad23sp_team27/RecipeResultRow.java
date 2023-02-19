@@ -1,11 +1,34 @@
 package edu.northeastern.numad23sp_team27;
 
 
-import java.util.ArrayList;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class RecipeResultRow {
+import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class RecipeResultRow implements Parcelable {
     private String recipe;
-    private ArrayList<RecipeResultRowChild> RecipeResultRowChildren;
+    private List<RecipeResultRowChild> RecipeResultRowChildren = new ArrayList<>();
+
+    protected RecipeResultRow(Parcel in) {
+        recipe = in.readString();
+        RecipeResultRowChildren = in.createTypedArrayList(RecipeResultRowChild.CREATOR);
+    }
+
+    public static final Creator<RecipeResultRow> CREATOR = new Creator<RecipeResultRow>() {
+        @Override
+        public RecipeResultRow createFromParcel(Parcel in) {
+            return new RecipeResultRow(in);
+        }
+
+        @Override
+        public RecipeResultRow[] newArray(int size) {
+            return new RecipeResultRow[size];
+        }
+    };
 
     public String getRecipe() {
         return recipe;
@@ -15,11 +38,11 @@ public class RecipeResultRow {
         this.recipe = recipe;
     }
 
-    public ArrayList<RecipeResultRowChild> getChildList() {
+    public List<RecipeResultRowChild> getChildList() {
         return RecipeResultRowChildren;
     }
 
-    public void setChildList(ArrayList<RecipeResultRowChild> childList) {
+    public void setChildList(List<RecipeResultRowChild> childList) {
         this.RecipeResultRowChildren = childList;
     }
 
@@ -28,9 +51,20 @@ public class RecipeResultRow {
         this.RecipeResultRowChildren = new ArrayList<>();
     }
 
-    public RecipeResultRow(String recipe, ArrayList<RecipeResultRowChild> RecipeResultRowChildren) {
+    public RecipeResultRow(String recipe, List<RecipeResultRowChild> RecipeResultRowChildren) {
         this.recipe = recipe;
         this.RecipeResultRowChildren = RecipeResultRowChildren;
 
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeList(RecipeResultRowChildren);
+        parcel.writeString(recipe);
     }
 }

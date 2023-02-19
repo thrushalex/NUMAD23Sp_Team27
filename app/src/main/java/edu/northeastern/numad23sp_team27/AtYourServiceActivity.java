@@ -1,5 +1,6 @@
 package edu.northeastern.numad23sp_team27;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -11,7 +12,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.TextView;
+
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +23,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,8 +34,8 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
     private RecipeListAdapter recipeListAdapter;
     private ExpandableListView recipeExpandableListView;
-    private ArrayList<RecipeResultRow> recipeResultRowList = new ArrayList<>();
-    private ArrayList<RecipeResultRow> displayRecipeResultRowList = new ArrayList<>();
+    private List<RecipeResultRow> recipeResultRowList = new ArrayList<>();
+    private List<RecipeResultRow> displayRecipeResultRowList = new ArrayList<>();
 
     Handler pingHandler = new Handler();
 
@@ -54,19 +54,22 @@ public class AtYourServiceActivity extends AppCompatActivity {
         et = findViewById(R.id.userInputEditText);
         // tv = findViewById(R.id.resultTextView);
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                closeKeyboard();
-                pingWebService();
-            }
+        btn.setOnClickListener(view -> {
+            closeKeyboard();
+            pingWebService();
         });
 
-        recipeResultRowList = new ArrayList<RecipeResultRow>();
-        displayRecipeResultRowList = new ArrayList<RecipeResultRow>();
-        loadInitData();
-        displayList();
-        expandAll();
+        recipeResultRowList = new ArrayList<>();
+        displayRecipeResultRowList = new ArrayList<>();
+        //loadInitData();
+        //displayList();
+        //expandAll();
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //
     }
 
     public void closeKeyboard() {
@@ -116,7 +119,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
     }
 
     public void displayList() {
-        recipeExpandableListView = (ExpandableListView) findViewById(R.id.exapandableRecipeListView);
+        recipeExpandableListView = findViewById(R.id.exapandableRecipeListView);
         recipeListAdapter = new RecipeListAdapter(AtYourServiceActivity.this, recipeResultRowList);
         recipeExpandableListView.setAdapter(recipeListAdapter);
     }
@@ -168,12 +171,12 @@ public class AtYourServiceActivity extends AppCompatActivity {
                         pingHandler.post(() -> {
                             recipeResultRowList.clear();
                             for(int i = 0; i < hits.length(); i++) {
-                                JSONObject recipeObject = null;;
+                                JSONObject recipeObject;
                                 try {
                                     recipeObject = hits.getJSONObject(i);
-                                    JSONObject recipe = null;
+                                    JSONObject recipe;
                                     recipe = recipeObject.getJSONObject("recipe");
-                                    String recipeText = null;
+                                    String recipeText;
                                     recipeText = recipe.getString("label");
                                     JSONArray ingredients = recipe.getJSONArray("ingredientLines");
                                     ArrayList<RecipeResultRowChild> childArr = new ArrayList<>();

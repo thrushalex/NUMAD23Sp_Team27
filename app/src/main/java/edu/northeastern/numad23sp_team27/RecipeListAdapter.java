@@ -10,14 +10,15 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RecipeListAdapter extends BaseExpandableListAdapter {
 
     private Context context;
-    private ArrayList<RecipeResultRow> recipeRowList;
-    private ArrayList<RecipeResultRow> originalRecipeRowList;
+    private List<RecipeResultRow> recipeRowList;
+    private List<RecipeResultRow> originalRecipeRowList;
 
-    public RecipeListAdapter(Context context, ArrayList<RecipeResultRow> originalRecipeRowList) {
+    public RecipeListAdapter(Context context, List<RecipeResultRow> originalRecipeRowList) {
         this.context = context;
         this.recipeRowList = new ArrayList<>();
         this.recipeRowList.addAll(originalRecipeRowList);
