@@ -2,10 +2,12 @@ package edu.northeastern.numad23sp_team27;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -36,8 +38,12 @@ public class AtYourServiceActivity extends AppCompatActivity {
     private ArrayList<RecipeResultRow> displayRecipeResultRowList = new ArrayList<>();
 
     Handler pingHandler = new Handler();
+
+    // String label;
+
     Button btn;
     EditText et;
+    //TextView tv;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,19 +57,60 @@ public class AtYourServiceActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                closeKeyboard();
                 pingWebService();
             }
         });
 
         recipeResultRowList = new ArrayList<RecipeResultRow>();
         displayRecipeResultRowList = new ArrayList<RecipeResultRow>();
+        loadInitData();
         displayList();
         expandAll();
+    }
+
+    public void closeKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    public void loadInitData(){
+        recipeResultRowList.clear();
+
+        // first level list
+        RecipeResultRow recipeResultRow1 = new RecipeResultRow();
+        recipeResultRow1.setRecipe("Chicken Noodle Soup");
+        // second level list
+        ArrayList<RecipeResultRowChild> recipeResultRowChildren1 = new ArrayList<>();
+        RecipeResultRowChild recipeResultRowChild1 = new RecipeResultRowChild();
+        recipeResultRowChild1.setRecipeResultRowText("chicken");
+        RecipeResultRowChild recipeResultRowChild2 = new RecipeResultRowChild();
+        recipeResultRowChild2.setRecipeResultRowText("carrots");
+        recipeResultRowChildren1.add(recipeResultRowChild1);
+        recipeResultRowChildren1.add(recipeResultRowChild2);
+        recipeResultRow1.setChildList(recipeResultRowChildren1);
+        recipeResultRowList.add(recipeResultRow1);
+
+        RecipeResultRow recipeResultRow2 = new RecipeResultRow();
+        recipeResultRow2.setRecipe("Chicken Alfredo");
+        ArrayList<RecipeResultRowChild> recipeResultRowChildren2 = new ArrayList<>();
+        RecipeResultRowChild recipeResultRowChild3 = new RecipeResultRowChild();
+        recipeResultRowChild3.setRecipeResultRowText("chicken");
+        recipeResultRowChildren2.add(recipeResultRowChild3);
+        RecipeResultRowChild recipeResultRowChild4 = new RecipeResultRowChild();
+        recipeResultRowChild4.setRecipeResultRowText("carrots");
+        recipeResultRow2.setChildList(recipeResultRowChildren2);
+        recipeResultRowList.add(recipeResultRow2);
+
     }
 
     private void expandAll() {
         int count = recipeListAdapter.getGroupCount();
         for (int i = 0; i < count; i++) {
+            //recipeListAdapter.onGroupExpanded(i);
             recipeExpandableListView.expandGroup(i);
         } //end for (int i = 0; i < count; i++)
     }
@@ -74,16 +121,15 @@ public class AtYourServiceActivity extends AppCompatActivity {
         recipeExpandableListView.setAdapter(recipeListAdapter);
     }
 
-
-
     public void pingWebService() {
         Thread pingT = new Thread(new GetFromWebService());
         pingT.start();
     }
 
-
     class GetFromWebService implements Runnable {
         String lb;
+//        String instr = "";
+//        JSONArray listOfInstr;
 
         GetFromWebService() {}
         @Override
@@ -93,6 +139,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
             String userInput = et.getText().toString();
             final String url_str = String.format("https://api.edamam.com/api/recipes/v2?type=%s&q=%s&app_id=%s&app_key=%s", "public", userInput, APP_ID, APP_KEY);
             try {
+                // int size;
                 URL url = new URL(url_str);
                 urlConnection = (HttpURLConnection) url.openConnection();
 
@@ -103,6 +150,7 @@ public class AtYourServiceActivity extends AppCompatActivity {
 
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
                 String res = readStream(in);
+                // Log.i("res", res);
 
                 JSONObject jObject = new JSONObject(res);
                 JSONArray hits = jObject.getJSONArray("hits");
@@ -127,31 +175,42 @@ public class AtYourServiceActivity extends AppCompatActivity {
                                     recipe = recipeObject.getJSONObject("recipe");
                                     String recipeText = null;
                                     recipeText = recipe.getString("label");
-                                    JSONArray ingredients = null;
-                                    ingredients = recipe.getJSONArray("ingredients");
-                                    ArrayList<RecipeResultRowChild> recipeResultRowChildren = new ArrayList<>();
-                                    for(int b = 0; b < ingredients.length(); b++) {
-                                        JSONObject ingredientsJSONObject = ingredients.getJSONObject(b);
-                                        String ingredientsText = "";
-                                        ingredientsText = ingredientsJSONObject.getString("text");
-                                        RecipeResultRowChild recipeResultRowChild = new RecipeResultRowChild();
-                                        recipeResultRowChild.setRecipeResultRowText(ingredientsText);
-                                        recipeResultRowChildren.add(recipeResultRowChild);
-                                    }
+                                    JSONArray ingredients = recipe.getJSONArray("ingredientLines");
+                                    ArrayList<RecipeResultRowChild> childArr = new ArrayList<>();
                                     RecipeResultRow recipeResultRow = new RecipeResultRow();
                                     recipeResultRow.setRecipe(recipeText);
-                                    if(!recipeResultRowChildren.isEmpty()){
-                                        recipeResultRow.setChildList(recipeResultRowChildren);
+                                    for (int j = 0; j < ingredients.length(); j++) {
+                                        RecipeResultRowChild rc = new RecipeResultRowChild(ingredients.getString(j));
+                                        childArr.add(rc);
                                     }
                                     recipeResultRowList.add(recipeResultRow);
+                                    if(!childArr.isEmpty()){
+                                        recipeResultRow.setChildList(childArr);
+                                    }
                                 } catch (JSONException e) {
                                     throw new RuntimeException(e);
                                 }
                             }
                             displayList();
-                            expandAll();
+                            //expandAll();
                         });
 
+//                    listOfInstr = recipe.getJSONArray("instructions");
+//
+//                    for (int i = 0; i < listOfInstr.length(); i++ ) {
+//                        String str = listOfInstr.getString(i) + "\n";
+//                        instr = instr.concat(str);
+//                    }
+//
+//                    lb = lb.concat("\n" + instr);
+
+
+                    /*
+                    pingHandler.post(() -> {
+                        tv.setText(lb);
+                    });
+
+                     */
                 }
             } catch (Exception e) {
                 e.printStackTrace();
