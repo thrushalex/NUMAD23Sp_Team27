@@ -3,4 +3,8 @@
     <string name="team_27">Team 27</string>
     <string name="at_your_service">At Your Service</string>
     <string name="btnPingWebService">Ping Web Service</string>
+    <string name="enter_a_food_or_dish">Enter a food or dish</string>
+    <string name="search_for_recipes">Search for recipes</string>
+    <string name="enter_a_food">Enter a food</string>
+    <string name="search_recipes">Search recipes</string>
 </resources>
