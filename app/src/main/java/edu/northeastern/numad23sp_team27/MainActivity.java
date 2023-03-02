@@ -22,6 +22,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         findViewById(R.id.atYourServiceButton).setOnClickListener(this);
+        findViewById(R.id.aboutBtn).setOnClickListener(this);
+        findViewById(R.id.stickerBtn).setOnClickListener(this);
     }
 
     @Override
@@ -35,7 +37,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.aboutBtn:
                 openAboutMeActivity();
                 break;
+            case R.id.stickerBtn:
+                openStickerActivity();
+                break;
         }
+    }
+
+    public void openStickerActivity() {
+        Intent intent = new Intent(this, StickerActivity.class);
+        startActivity(intent);
     }
 
     public void openAboutMeActivity() {
