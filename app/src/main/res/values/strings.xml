@@ -7,4 +7,10 @@
     <string name="search_for_recipes">Search for recipes</string>
     <string name="enter_a_food">Enter a food</string>
     <string name="search_recipes">Search recipes</string>
+    <string name="sent_sticker">Sent Stickers</string>
+    <string name="about_btn">ABOUT</string>
+    <string name="zhengyuan_chen">Zhengyuan Chen</string>
+    <string name="blake_koontz">Blake Koontz</string>
+    <string name="alexander_thrush">Alexander Thrush</string>
+    <string name="jeremiah_asala">Jeremiah Asala</string>
 </resources>

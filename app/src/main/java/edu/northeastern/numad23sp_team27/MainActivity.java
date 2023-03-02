@@ -26,15 +26,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-//        Button b = (Button) view;
-//        switch(b.getId()) {
-//            case R.id.atYourServiceButton:
-//                //do something
-//                pingWebService();
-//                break;
-//        }
+        Button b = (Button) view;
+        switch(b.getId()) {
+            case R.id.atYourServiceButton:
+                //do something
+                openNewActivity();
+                break;
+            case R.id.aboutBtn:
+                openAboutMeActivity();
+                break;
+        }
+    }
 
-        openNewActivity();
+    public void openAboutMeActivity() {
+        Intent intent = new Intent(this, AboutMeActivity.class);
+        startActivity(intent);
     }
 
     public void openNewActivity() {
