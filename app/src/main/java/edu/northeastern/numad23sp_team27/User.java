@@ -18,4 +18,16 @@ public class User {
         // history of stickers received
         this.historyOfStickersReceived = new ArrayList<>();
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public Map<String, Integer> getCountOfStickersSent() {
+        return countOfStickersSent;
+    }
+
+    public ArrayList<Integer> getHistoryOfStickersReceived() {
+        return historyOfStickersReceived;
+    }
 }
