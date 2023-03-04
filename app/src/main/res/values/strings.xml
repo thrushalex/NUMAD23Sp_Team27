@@ -15,4 +15,8 @@
     <string name="jeremiah_asala">Jeremiah Asala</string>
     <string name="btnLogin">Login</string>
     <string name="btnCreateUser">Create User</string>
+    <string name="current_logged_in">Current logged in:</string>
+    <string name="username">_username_</string>
+    <string name="last_sticker_sent_by">Last sticker sent by:</string>
+    <string name="send_sticker">Send Sticker</string>
 </resources>

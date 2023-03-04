@@ -5,5 +5,50 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SendStickerActivity">
+    <TextView
+        android:id="@+id/currentlyLoggedInTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/current_logged_in"
+        app:layout_constraintRight_toLeftOf="@id/usernameTextView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/lastStickerSentTextView"/>
+    <TextView
+        android:id="@+id/usernameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/username"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/currentlyLoggedInTextView"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/otherUsernameTextView"/>
+    <TextView
+        android:id="@+id/lastStickerSentTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/last_sticker_sent_by"
+        app:layout_constraintRight_toLeftOf="@id/otherUsernameTextView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/currentlyLoggedInTextView"
+        app:layout_constraintBottom_toTopOf="@id/sendStickerButton"/>
+    <TextView
+        android:id="@+id/otherUsernameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/username"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/lastStickerSentTextView"
+        app:layout_constraintTop_toBottomOf="@id/usernameTextView"
+        app:layout_constraintBottom_toTopOf="@id/sendStickerButton"/>
 
+    <Button
+        android:id="@+id/sendStickerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send_sticker"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/otherUsernameTextView"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
