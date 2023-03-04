@@ -32,7 +32,7 @@ public class StickerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sticker);
 
         db = FirebaseDatabase.getInstance(DB_ADDRESS).getReference();
-        db.setValue("users");
+        //db.setValue("users");
 
         // references to buttons/textView
         createUserBtn = findViewById(R.id.createUserBtn);
