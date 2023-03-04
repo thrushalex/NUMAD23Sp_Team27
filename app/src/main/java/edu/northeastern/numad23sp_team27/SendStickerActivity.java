@@ -16,5 +16,9 @@ public class SendStickerActivity extends AppCompatActivity {
 
         SharedPreferences sharedPreferences = getSharedPreferences("application", MODE_PRIVATE);
         String usernm = sharedPreferences.getString("name", "");
+
+        userPage = findViewById(R.id.userTextView);
+
+        userPage.setText(usernm);
     }
 }
