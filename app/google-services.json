@@ -1,34 +1,63 @@
 {
   "project_info": {
-    "project_number": "298362609732",
-    "firebase_url": "https://at-your-service-4ab17-default-rtdb.firebaseio.com",
-    "project_id": "at-your-service-4ab17",
-    "storage_bucket": "at-your-service-4ab17.appspot.com"
+    "project_number": "190727892744",
+    "firebase_url": "https://cs5520-test-f2993-default-rtdb.firebaseio.com",
+    "project_id": "cs5520-test-f2993",
+    "storage_bucket": "cs5520-test-f2993.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:298362609732:android:6fda690388af714e271c11",
+        "mobilesdk_app_id": "1:190727892744:android:567febe6a24e31d2f006bd",
         "android_client_info": {
-          "package_name": "edu.northeastern.numad23sp_team27"
+          "package_name": "edu.neu.madcourse.firebasedemo"
         }
       },
       "oauth_client": [
         {
-          "client_id": "298362609732-26dkt6dev6msphnsvlb0e9vg9hb8hola.apps.googleusercontent.com",
+          "client_id": "190727892744-vh48kspcchl9kqbdbm2j8cemt6j8gfms.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAkF61RVQQE6Jlrw0Hjx6llMjI7apyl5nc"
+          "current_key": "AIzaSyDHYZJqkz99uv_tInM-X91aW5NpQRXLiNo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "298362609732-26dkt6dev6msphnsvlb0e9vg9hb8hola.apps.googleusercontent.com",
+              "client_id": "190727892744-vh48kspcchl9kqbdbm2j8cemt6j8gfms.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:190727892744:android:5d8f635231c40002f006bd",
+        "android_client_info": {
+          "package_name": "edu.northeastern.numad23sp_team27"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "190727892744-vh48kspcchl9kqbdbm2j8cemt6j8gfms.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHYZJqkz99uv_tInM-X91aW5NpQRXLiNo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "190727892744-vh48kspcchl9kqbdbm2j8cemt6j8gfms.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
