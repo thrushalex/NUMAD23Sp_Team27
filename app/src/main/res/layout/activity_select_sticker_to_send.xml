@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SelectStickerToSend">
+
+    <ImageView
+        android:id="@+id/sticker1ImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Smiling Emoji"
+        android:onClick="onClick"
+        app:srcCompat="@drawable/sticker1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/sticker2ImageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/sticker2ImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Upside Down Smiling Emoji"
+        android:onClick="onClick"
+        app:srcCompat="@drawable/sticker2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/sticker3ImageView"
+        app:layout_constraintTop_toBottomOf="@id/sticker1ImageView" />
+
+    <ImageView
+        android:id="@+id/sticker3ImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Crying Laughing Emoji"
+        android:onClick="onClick"
+        app:srcCompat="@drawable/sticker3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/sticker4ImageView"
+        app:layout_constraintTop_toBottomOf="@id/sticker2ImageView" />
+
+    <ImageView
+        android:id="@+id/sticker4ImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Zipped Mouth Emoji"
+        android:onClick="onClick"
+        app:srcCompat="@drawable/sticker4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/recipientUsernameEditText"
+        app:layout_constraintTop_toBottomOf="@id/sticker3ImageView"  />
+
+    <EditText
+        android:id="@+id/recipientUsernameEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:minHeight="48dp"
+        android:text="Enter recipient's username"
+        app:layout_constraintBottom_toTopOf="@id/sendStickerButton2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sticker4ImageView" />
+
+    <Button
+        android:id="@+id/sendStickerButton2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send Sticker"
+        android:onClick="sendSticker"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recipientUsernameEditText" />
+</androidx.constraintlayout.widget.ConstraintLayout>

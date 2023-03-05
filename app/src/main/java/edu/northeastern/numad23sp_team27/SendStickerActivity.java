@@ -2,8 +2,10 @@ package edu.northeastern.numad23sp_team27;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class SendStickerActivity extends AppCompatActivity {
@@ -20,5 +22,10 @@ public class SendStickerActivity extends AppCompatActivity {
         userPage = findViewById(R.id.userTextView);
 
         userPage.setText(usernm);
+    }
+
+    public void startSelectStickerActivity(View view) {
+        Intent myIntent = new Intent(SendStickerActivity.this, SelectStickerToSend.class);
+        SendStickerActivity.this.startActivity(myIntent);
     }
 }
