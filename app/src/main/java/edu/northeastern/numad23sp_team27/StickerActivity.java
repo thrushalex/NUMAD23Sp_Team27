@@ -20,8 +20,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 public class StickerActivity extends AppCompatActivity {
-    // private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
-    private static final String DB_ADDRESS = "https://send-sticker-test-default-rtdb.firebaseio.com/";
+    private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
+    //private static final String DB_ADDRESS = "https://send-sticker-test-default-rtdb.firebaseio.com/";
     private DatabaseReference db;
     private Button createUserBtn;
     private Button loginBtn;

@@ -10,10 +10,60 @@
         android:id="@+id/userTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="56dp"
         android:hint="User's page"
+        app:layout_constraintBottom_toTopOf="@id/senderUsernameTV"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/currentUserLabelTV"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/sendStickerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send a sticker"
+        android:onClick="startSelectStickerActivity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/stickerImageView"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ImageView
+        android:id="@+id/stickerImageView"
+        android:layout_width="216dp"
+        android:layout_height="209dp"
+        app:srcCompat="@drawable/empty_placeholder"
+        app:layout_constraintBottom_toTopOf="@id/sendStickerButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lastStickerFromTV"  />
+
+    <TextView
+        android:id="@+id/currentUserLabelTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Current User:"
+        app:layout_constraintBottom_toTopOf="@id/lastStickerFromTV"
+        app:layout_constraintEnd_toStartOf="@id/userTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"  />
+
+    <TextView
+        android:id="@+id/lastStickerFromTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Last Sticker From:"
+        app:layout_constraintBottom_toTopOf="@id/stickerImageView"
+        app:layout_constraintEnd_toStartOf="@id/senderUsernameTV"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/currentUserLabelTV" />
+
+    <TextView
+        android:id="@+id/senderUsernameTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="N/A"
+        app:layout_constraintBottom_toTopOf="@id/stickerImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/lastStickerFromTV"
+        app:layout_constraintTop_toBottomOf="@id/userTextView"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
