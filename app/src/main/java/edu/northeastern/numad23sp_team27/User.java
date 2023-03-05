@@ -14,19 +14,13 @@ public class User {
         this.username = username;
 
         // count of stickers sent
+        // adding 0 as temp fix, if array has no value it doesn't get added to DB
         this.countOfStickersSent = new ArrayList<>();
-        this.countOfStickersSent.add(1);
-        this.countOfStickersSent.add(2);
-        this.countOfStickersSent.add(3);
-        this.countOfStickersSent.add(3);
-        this.countOfStickersSent.add(2);
-        this.countOfStickersSent.add(3);
+        this.countOfStickersSent.add(0);
 
         // history of stickers received
         this.historyOfStickersReceived = new ArrayList<>();
-        this.historyOfStickersReceived.add(1);
-        this.historyOfStickersReceived.add(2);
-        this.historyOfStickersReceived.add(3);
+        this.historyOfStickersReceived.add(0);
     }
 
     User(String username, ArrayList<Integer> countOfStickersSent, ArrayList<Integer> historyOfStickersReceived) {
