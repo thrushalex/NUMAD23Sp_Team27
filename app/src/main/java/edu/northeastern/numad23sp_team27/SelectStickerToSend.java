@@ -2,7 +2,16 @@ package edu.northeastern.numad23sp_team27;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -27,8 +36,9 @@ public class SelectStickerToSend extends AppCompatActivity {
 
     private Integer selected_sticker;
     private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
-
+    private static final String CHANNEL_ID = "notification_channel";
     private String logged_in_username;
+    private NotificationManagerCompat notificationManager;
     private DatabaseReference db;
 
     private EditText usernameET;
@@ -45,6 +55,10 @@ public class SelectStickerToSend extends AppCompatActivity {
         sendSticker = findViewById(R.id.sendStickerButton2);
         selected_sticker = 0;
 
+        // create notification channel
+        createNotificationChannel();
+        // notification manager
+        notificationManager = NotificationManagerCompat.from(this);
         sendSticker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,7 +91,13 @@ public class SelectStickerToSend extends AppCompatActivity {
                     stickersReceived.add(selected_sticker);
                     User updatedRecipientUser = new User(username, stickersSent, stickersReceived);
                     db.child("users").child(username).setValue(updatedRecipientUser);
+                    // show notification
+                    NotificationCompat.Builder builder = createNotificationBuilder(selected_sticker, username);
+                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                        return;
                     }
+                    notificationManager.notify(0, builder.build());
+                }
             }
 
             @Override
@@ -112,6 +132,43 @@ public class SelectStickerToSend extends AppCompatActivity {
                 Log.i("Registration Error", error.getMessage());
             }
         });
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "notification Channel", importance);
+            channel.setDescription("sticker received notification");
+            channel.enableVibration(true);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
+    public int getSticker(int i) {
+        if (i == 1)
+            return R.drawable.sticker1;
+        else if (i == 2)
+            return R.drawable.sticker2;
+        else if (i == 3)
+            return R.drawable.sticker3;
+        else if (i == 4)
+            return R.drawable.sticker4;
+        return -1;
+    }
+    public NotificationCompat.Builder createNotificationBuilder(int selected_sticker, String sender) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle("You Received a New Sticker!")
+                .setSmallIcon(getSticker(selected_sticker))
+                .setContentText("You have a new sticker from " + sender)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), getSticker(selected_sticker)))
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
+        return builder;
     }
 
     public void onClick(View view) {
