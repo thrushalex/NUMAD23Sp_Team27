@@ -15,4 +15,8 @@
     <string name="jeremiah_asala">Jeremiah Asala</string>
     <string name="btnLogin">Login</string>
     <string name="btnCreateUser">Create User</string>
+    <string name="textViewUserPageUser">User\'s page</string>
+    <string name="btnPurchaseStickers">Stickers -> Purchase</string>
+    <string name="btnStickerWallet">Stickers -> Wallet</string>
+    <string name="btnStickerHistory">Stickers -> History</string>
 </resources>
