@@ -19,4 +19,6 @@
     <string name="btnPurchaseStickers">Stickers -> Purchase</string>
     <string name="btnStickerWallet">Stickers -> Wallet</string>
     <string name="btnStickerHistory">Stickers -> History</string>
+    <string name="textViewPurchaseStickerTitle">Purchase Stickers</string>
+    <string name="tvStickerRecordTitle">textviewStickerRecordTitle</string>
 </resources>
