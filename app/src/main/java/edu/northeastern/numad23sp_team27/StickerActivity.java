@@ -99,7 +99,7 @@ public class StickerActivity extends AppCompatActivity {
                     ed.putString("name", username);
                     ed.apply();
 
-                    startActivity(new Intent(StickerActivity.this, SendStickerActivity.class));
+                    startActivity(new Intent(StickerActivity.this, UserStickerActivity.class));
                 } else {
                     Toast.makeText(StickerActivity.this, "No account for this user! Please create an account", Toast.LENGTH_SHORT).show();
                 }
