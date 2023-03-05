@@ -26,6 +26,7 @@ public class SendStickerActivity extends AppCompatActivity {
 
     public void startSelectStickerActivity(View view) {
         Intent myIntent = new Intent(SendStickerActivity.this, SelectStickerToSend.class);
+        myIntent.putExtra("logged_in_username", userPage.getText().toString());
         SendStickerActivity.this.startActivity(myIntent);
     }
 }

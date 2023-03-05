@@ -27,6 +27,8 @@ public class SelectStickerToSend extends AppCompatActivity {
 
     private Integer selected_sticker;
     private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
+
+    private String logged_in_username;
     private DatabaseReference db;
 
     private EditText usernameET;
@@ -37,6 +39,7 @@ public class SelectStickerToSend extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_sticker_to_send);
+        logged_in_username = getIntent().getStringExtra("logged_in_username");
         db = FirebaseDatabase.getInstance(DB_ADDRESS).getReference();
         usernameET = findViewById(R.id.recipientUsernameEditText);
         sendSticker = findViewById(R.id.sendStickerButton2);
@@ -51,6 +54,7 @@ public class SelectStickerToSend extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Username field cannot be blank", Toast.LENGTH_SHORT).show();
                 } else {
                     sendSticker(username);
+                    receiveSticker(logged_in_username);
                 }
             }
         });
@@ -62,17 +66,45 @@ public class SelectStickerToSend extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
+                    // for recipient
                     // user exists
                     Toast.makeText(getApplicationContext(), "User found", Toast.LENGTH_SHORT).show();
                     //Process countOfStickersSent into ArrayList
                     ArrayList<Integer> stickersSent = convertStringListToList(snapshot.child("countOfStickersSent").getValue().toString());
                     //Process historyOfStickersReceived into ArrayList
                     ArrayList<Integer> stickersReceived = convertStringListToList(snapshot.child("historyOfStickersReceived").getValue().toString());
-                    //Add sticker
+                    //Add sticker received
                     stickersReceived.add(selected_sticker);
                     User updatedRecipientUser = new User(username, stickersSent, stickersReceived);
                     db.child("users").child(username).setValue(updatedRecipientUser);
                     }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("Registration Error", error.getMessage());
+            }
+        });
+    }
+
+    public void receiveSticker(String username) {
+
+        db.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // for sender
+                    // user exists
+                    Toast.makeText(getApplicationContext(), "User found", Toast.LENGTH_SHORT).show();
+                    //Process countOfStickersSent into ArrayList
+                    ArrayList<Integer> stickersSent = convertStringListToList(snapshot.child("countOfStickersSent").getValue().toString());
+                    //Add sticker sent
+                    stickersSent.add(selected_sticker);
+                    //Process historyOfStickersReceived into ArrayList
+                    ArrayList<Integer> stickersReceived = convertStringListToList(snapshot.child("historyOfStickersReceived").getValue().toString());
+                    User updatedRecipientUser = new User(username, stickersSent, stickersReceived);
+                    db.child("users").child(username).setValue(updatedRecipientUser);
+                }
             }
 
             @Override
