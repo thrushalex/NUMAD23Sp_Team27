@@ -30,8 +30,13 @@ public class UserStickerActivity extends AppCompatActivity implements View.OnCli
         userPage.setText(usernm);
 
         stickerPurchase = findViewById(R.id.btnStickersPurchase);
+        stickerPurchase.setOnClickListener(this);
+
         stickerWallet = findViewById(R.id.btnStickersWallet);
+        stickerWallet.setOnClickListener(this);
+
         stickerHistory = findViewById(R.id.btnStickersHistory);
+        stickerHistory.setOnClickListener(this);
 
     }
 
