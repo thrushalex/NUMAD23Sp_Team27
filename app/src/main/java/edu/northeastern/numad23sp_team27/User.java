@@ -14,9 +14,31 @@ public class User {
 
         // count of stickers sent
         this.countOfStickersSent = new HashMap<>();
+        this.countOfStickersSent.put("test", 1);
 
         // history of stickers received
         this.historyOfStickersReceived = new ArrayList<>();
+        this.historyOfStickersReceived.add(1);
+    }
+
+    User(String username, HashMap<String, Integer> countOfStickersSent, ArrayList<Integer> historyOfStickersReceived) {
+        this.username = username;
+
+        // count of stickers sent
+        this.countOfStickersSent = new HashMap<>();
+
+        // history of stickers received
+        this.historyOfStickersReceived = new ArrayList<>();
+    }
+
+    User(User user) {
+        this.username = user.getUsername();
+
+        // count of stickers sent
+        this.countOfStickersSent = user.getCountOfStickersSent();
+
+        // history of stickers received
+        this.historyOfStickersReceived = user.getHistoryOfStickersReceived();
     }
 
     public String getUsername() {
@@ -29,5 +51,9 @@ public class User {
 
     public ArrayList<Integer> getHistoryOfStickersReceived() {
         return historyOfStickersReceived;
+    }
+
+    public void addStickerToArray(int sticker) {
+        historyOfStickersReceived.add(sticker);
     }
 }

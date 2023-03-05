@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:minHeight="48dp"
-        android:text="Enter recipient's username"
+        android:hint="Enter recipient's username"
         app:layout_constraintBottom_toTopOf="@id/sendStickerButton2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

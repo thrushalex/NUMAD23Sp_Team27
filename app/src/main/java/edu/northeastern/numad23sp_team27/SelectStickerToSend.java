@@ -18,6 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class SelectStickerToSend extends AppCompatActivity {
 
     private Integer selected_sticker;
@@ -45,13 +48,13 @@ public class SelectStickerToSend extends AppCompatActivity {
                 if (TextUtils.isEmpty(username)) {
                     Toast.makeText(getApplicationContext(), "Username field cannot be blank", Toast.LENGTH_SHORT).show();
                 } else {
-                    checkForUser(username);
+                    sendSticker(username);
                 }
             }
         });
     }
 
-    public void checkForUser(String username) {
+    public void sendSticker(String username) {
 
         db.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -59,7 +62,13 @@ public class SelectStickerToSend extends AppCompatActivity {
                 if (snapshot.exists()) {
                     // user exists
                     Toast.makeText(getApplicationContext(), "User found", Toast.LENGTH_SHORT).show();
-                }
+                    // get recipient user
+                    User recipientUser = snapshot.getValue(User.class);
+                    // add sticker to array
+                    recipientUser.addStickerToArray(selected_sticker);
+                    // update entry in DB
+                    db.child("users").child(username).setValue(recipientUser);
+                    }
             }
 
             @Override
