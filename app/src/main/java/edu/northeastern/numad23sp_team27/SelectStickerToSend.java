@@ -18,7 +18,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class SelectStickerToSend extends AppCompatActivity {
@@ -62,12 +64,14 @@ public class SelectStickerToSend extends AppCompatActivity {
                 if (snapshot.exists()) {
                     // user exists
                     Toast.makeText(getApplicationContext(), "User found", Toast.LENGTH_SHORT).show();
-                    // get recipient user
-                    User recipientUser = snapshot.getValue(User.class);
-                    // add sticker to array
-                    recipientUser.addStickerToArray(selected_sticker);
-                    // update entry in DB
-                    db.child("users").child(username).setValue(recipientUser);
+                    //Process countOfStickersSent into ArrayList
+                    ArrayList<Integer> stickersSent = convertStringListToList(snapshot.child("countOfStickersSent").getValue().toString());
+                    //Process historyOfStickersReceived into ArrayList
+                    ArrayList<Integer> stickersReceived = convertStringListToList(snapshot.child("historyOfStickersReceived").getValue().toString());
+                    //Add sticker
+                    stickersReceived.add(selected_sticker);
+                    User updatedRecipientUser = new User(username, stickersSent, stickersReceived);
+                    db.child("users").child(username).setValue(updatedRecipientUser);
                     }
             }
 
@@ -95,5 +99,15 @@ public class SelectStickerToSend extends AppCompatActivity {
         if (selected_sticker == 0) {
             Toast.makeText(getApplicationContext(), "No emoji selected", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public ArrayList convertStringListToList(String stringFormList) {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        stringFormList = stringFormList.replace("[","");
+        stringFormList = stringFormList.replace("]","");
+        stringFormList = stringFormList.replace(" ","");
+        ArrayList<String> sentStringList = new ArrayList<>(Arrays.asList(stringFormList.split(",")));
+        sentStringList.forEach((n) -> arrayList.add(Integer.parseInt(n)));
+        return arrayList;
     }
 }
