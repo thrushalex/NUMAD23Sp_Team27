@@ -2,6 +2,7 @@ package edu.northeastern.numad23sp_team27;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,12 +41,12 @@ public class SendStickerActivity extends AppCompatActivity {
     }
 
     public void getLastStickerForUser(String username) {
-        db.child("users").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+        db.child("users").child(username).child("historyOfStickersReceived").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     //Process historyOfStickersReceived into ArrayList
-                    ArrayList<Integer> stickersReceived = new Utils().convertStringListToList(snapshot.child("historyOfStickersReceived").getValue().toString());
+                    ArrayList<Integer> stickersReceived = new Utils().convertStringListToList(snapshot.getValue().toString());
                     //Get last sticker
                     Integer array_length = stickersReceived.size() - 1;
                     Integer stickerID = stickersReceived.get(array_length);
@@ -76,7 +77,6 @@ public class SendStickerActivity extends AppCompatActivity {
             ImageView IV = findViewById(R.id.stickerImageView);
             IV.setImageResource(R.drawable.sticker4);
         }
-
     }
 
     public void startSelectStickerActivity(View view) {
