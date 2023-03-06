@@ -17,6 +17,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Sticker_Count extends AppCompatActivity {
 
@@ -44,7 +46,8 @@ public class Sticker_Count extends AppCompatActivity {
                 if (snapshot.exists()) {
                     //Process countOfStickersSent into ArrayList
                     stickers = new Utils().convertStringListToList(snapshot.getValue().toString());
-                    ArrayList<Integer> stickerCount = getArrayOfCounts(stickers);
+                    Map<Integer, Integer> stickerCount = getArrayOfCounts(stickers);
+                    //Toast.makeText(getApplicationContext(), "test" + stickerCount.toString(),Toast.LENGTH_SHORT).show();
                     updateCounts(stickerCount);
 
                 }
@@ -57,37 +60,40 @@ public class Sticker_Count extends AppCompatActivity {
         });
     }
 
-    public ArrayList<Integer> getArrayOfCounts(ArrayList<Integer> countOfStickers) {
-        ArrayList<Integer> countArray = new ArrayList<>();
+    public Map<Integer, Integer> getArrayOfCounts(ArrayList<Integer> countOfStickers) {
+        Map<Integer, Integer> countMap = new HashMap<>();
         Integer size = countOfStickers.size();
-        for (int index = 0; index <= size; ++index) {
+        countMap.put(0,0);
+        countMap.put(1,0);
+        countMap.put(2,0);
+        countMap.put(3,0);
+        countMap.put(4,0);
+        for (int index = 0; index < size; ++index) {
             Integer currentValue = countOfStickers.get(index);
-            if(countArray.get(index) != null) {
-                countArray.set(index, currentValue + 1);
-            } else {
-                countArray.set(index, 1);
-            }
+            System.out.println(currentValue);
+            Integer mapValue = countMap.get(currentValue);
+            countMap.put(currentValue, mapValue + 1);
         }
-        return countArray;
+        return countMap;
     }
 
-    public void updateCounts(ArrayList<Integer> idCounts) {
-        Integer size = idCounts.size();
-        for (int index = 0; index <= size; ++index) {
-            Integer intCount = idCounts.get(index);
-            String stringCount = intCount.toString();
+    public void updateCounts(Map<Integer, Integer> stickerCounts) {
+        Integer size = stickerCounts.size();
+        for (int index = 1; index < size; ++index) {
+            Integer stickerCount = stickerCounts.get(index);
+            String stickerCountString = stickerCount.toString();
             if (index == 1) {
                 TextView TV = findViewById(R.id.sticker1CountTV);
-                TV.setText(stringCount);
+                TV.setText(stickerCountString);
             } else if (index == 2) {
                 TextView TV = findViewById(R.id.sticker2CountTV);
-                TV.setText(stringCount);
+                TV.setText(stickerCountString);
             } else if (index == 3) {
                 TextView TV = findViewById(R.id.sticker3CountTV);
-                TV.setText(stringCount);
+                TV.setText(stickerCountString);
             } else if (index == 4) {
                 TextView TV = findViewById(R.id.sticker4CountTV);
-                TV.setText(stringCount);
+                TV.setText(stickerCountString);
             }
         }
     }
