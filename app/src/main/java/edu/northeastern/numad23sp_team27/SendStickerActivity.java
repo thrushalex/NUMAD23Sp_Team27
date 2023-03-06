@@ -84,4 +84,10 @@ public class SendStickerActivity extends AppCompatActivity {
         myIntent.putExtra("logged_in_username", userPage.getText().toString());
         SendStickerActivity.this.startActivity(myIntent);
     }
+
+    public void startStickerCountActivity(View view) {
+        Intent intent = new Intent(this, Sticker_Count.class);
+        intent.putExtra("logged_in_username", userPage.getText().toString());
+        startActivity(intent);
+    }
 }

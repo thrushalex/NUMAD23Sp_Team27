@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SelectStickerToSend">
+
+    <ImageView
+        android:id="@+id/sticker1ImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Smiling Emoji"
+        app:srcCompat="@drawable/sticker1"
+        app:layout_constraintEnd_toStartOf="@id/sticker1CountTV"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/sticker2ImageView"
+        app:layout_constraintTop_toBottomOf="@id/textView" />
+
+    <ImageView
+        android:id="@+id/sticker2ImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Upside Down Smiling Emoji"
+        app:srcCompat="@drawable/sticker2"
+        app:layout_constraintEnd_toStartOf="@id/sticker2CountTV"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/sticker3ImageView"
+        app:layout_constraintTop_toBottomOf="@id/sticker1ImageView" />
+
+    <ImageView
+        android:id="@+id/sticker3ImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Crying Laughing Emoji"
+        app:srcCompat="@drawable/sticker3"
+        app:layout_constraintEnd_toStartOf="@id/sticker3CountTV"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/sticker4ImageView"
+        app:layout_constraintTop_toBottomOf="@id/sticker2ImageView" />
+
+    <ImageView
+        android:id="@+id/sticker4ImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="Zipped Mouth Emoji"
+        app:layout_constraintEnd_toStartOf="@id/sticker4CountTV"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sticker3ImageView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/sticker4" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stickers Sent Count"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/sticker1ImageView"/>
+
+    <TextView
+        android:id="@+id/sticker1CountTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Count"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sticker1ImageView"
+        app:layout_constraintTop_toTopOf="@id/sticker1ImageView"
+        app:layout_constraintBottom_toBottomOf="@id/sticker1ImageView"/>
+
+    <TextView
+        android:id="@+id/sticker2CountTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Count"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sticker2ImageView"
+        app:layout_constraintTop_toTopOf="@id/sticker2ImageView"
+        app:layout_constraintBottom_toBottomOf="@id/sticker2ImageView"/>
+    
+
+    <TextView
+        android:id="@+id/sticker4CountTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Count"
+        app:layout_constraintTop_toTopOf="@id/sticker4ImageView"
+        app:layout_constraintBottom_toBottomOf="@id/sticker4ImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sticker4ImageView" />
+
+    <TextView
+        android:id="@+id/sticker3CountTV"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Count"
+        app:layout_constraintTop_toTopOf="@id/sticker3ImageView"
+        app:layout_constraintBottom_toBottomOf="@id/sticker3ImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/sticker3ImageView"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
