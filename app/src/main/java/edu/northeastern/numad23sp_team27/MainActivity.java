@@ -1,6 +1,8 @@
 package edu.northeastern.numad23sp_team27;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +18,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    String CHANNEL_ID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +27,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.atYourServiceButton).setOnClickListener(this);
         findViewById(R.id.aboutBtn).setOnClickListener(this);
         findViewById(R.id.stickerBtn).setOnClickListener(this);
+        CHANNEL_ID = "channel ID";
+        createNotificationChannel();
     }
 
     @Override
@@ -56,6 +61,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void openNewActivity() {
         Intent intent = new Intent(this, AtYourServiceActivity.class);
         startActivity(intent);
+    }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        CharSequence name = "channel_name";
+        String description = "channel_description";
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+        channel.setDescription(description);
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
     }
 
 //    public void pingWebService() {

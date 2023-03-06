@@ -2,9 +2,14 @@ package edu.northeastern.numad23sp_team27;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,13 +24,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class StickerActivity extends AppCompatActivity {
     private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
-    //private static final String DB_ADDRESS = "https://send-sticker-test-default-rtdb.firebaseio.com/";
     private DatabaseReference db;
     private Button createUserBtn;
+
+    private String CHANNEL_ID;
     private Button loginBtn;
     private TextView usernameTV;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +47,8 @@ public class StickerActivity extends AppCompatActivity {
         createUserBtn = findViewById(R.id.createUserBtn);
         loginBtn = findViewById(R.id.loginBtn);
         usernameTV = findViewById(R.id.enterUsername);
+        CHANNEL_ID = "channel ID";
+        /*createNotificationBuilder(1, "test");*/
 
         createUserBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,8 +71,78 @@ public class StickerActivity extends AppCompatActivity {
                 if (TextUtils.isEmpty(username)) {
                     Toast.makeText(StickerActivity.this, "Username field cannot be blank", Toast.LENGTH_SHORT).show();
                 } else {
+                    setNotificationListener(username);
                     login(username);
                 }
+            }
+        });
+    }
+
+    public NotificationCompat.Builder createNotificationBuilder(Integer stickerID) {
+        if (stickerID == 1) {
+            return new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle("New sticker!")
+                    .setSmallIcon(R.drawable.sticker1)
+                    .setContentText("Test text")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true);
+        } else if (stickerID == 2) {
+            return new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle("New sticker!")
+                    .setSmallIcon(R.drawable.sticker2)
+                    .setContentText("Test text")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true);
+        } else if (stickerID == 3) {
+            return new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle("New sticker!")
+                    .setSmallIcon(R.drawable.sticker3)
+                    .setContentText("Test text")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true);
+        } else if (stickerID == 4) {
+            return new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle("New sticker!")
+                    .setSmallIcon(R.drawable.sticker4)
+                    .setContentText("Test text")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true);
+        } else {
+            return new NotificationCompat.Builder(this, CHANNEL_ID)
+                    .setContentTitle("New sticker!")
+                    .setSmallIcon(R.drawable.empty_placeholder)
+                    .setContentText("Test text")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true);
+        }
+    }
+
+    public void sendNotification(Integer stickerID) {
+        NotificationCompat.Builder builder = createNotificationBuilder(stickerID);
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        notificationManagerCompat.notify(0, builder.build());
+    }
+
+    public void setNotificationListener(String username) {
+        db.child("users").child(username).child("historyOfStickersReceived").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    //Process historyOfStickersReceived into ArrayList
+                    ArrayList<Integer> stickers = new Utils().convertStringListToList(snapshot.getValue().toString());
+                    if (stickers.size() >0 ) {
+                        Integer sticker = stickers.get(stickers.size() - 1);
+                        sendNotification(sticker);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("Registration Error", error.getMessage());
             }
         });
     }
