@@ -1,6 +1,7 @@
 package edu.northeastern.numad23sp_team27;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -21,6 +22,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,7 +44,7 @@ public class SelectStickerToSend extends AppCompatActivity {
     private DatabaseReference db;
 
     private EditText usernameET;
-
+    private EditText recipient;
     private Button sendSticker;
 
     @Override
@@ -52,6 +54,7 @@ public class SelectStickerToSend extends AppCompatActivity {
         logged_in_username = getIntent().getStringExtra("logged_in_username");
         db = FirebaseDatabase.getInstance(DB_ADDRESS).getReference();
         usernameET = findViewById(R.id.recipientUsernameEditText);
+        recipient = findViewById(R.id.recipientUsernameEditText);
         sendSticker = findViewById(R.id.sendStickerButton2);
         selected_sticker = 0;
 
@@ -72,6 +75,7 @@ public class SelectStickerToSend extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     public void sendSticker(String username) {
@@ -91,18 +95,32 @@ public class SelectStickerToSend extends AppCompatActivity {
                     stickersReceived.add(selected_sticker);
                     User updatedRecipientUser = new User(username, stickersSent, stickersReceived);
                     db.child("users").child(username).setValue(updatedRecipientUser);
-                    // show notification
-                    NotificationCompat.Builder builder = createNotificationBuilder(selected_sticker, username);
-                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                        return;
-                    }
-                    notificationManager.notify(0, builder.build());
+                    sendNotification(recipient.getText().toString());
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.i("Registration Error", error.getMessage());
+            }
+        });
+    }
+
+    public void sendNotification(String recipient) {
+        db.child("users").child(recipient).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // show notification
+                NotificationCompat.Builder builder = createNotificationBuilder(selected_sticker, logged_in_username);
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                notificationManager.notify(0, builder.build());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
