@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.atYourServiceButton).setOnClickListener(this);
         findViewById(R.id.aboutBtn).setOnClickListener(this);
         findViewById(R.id.stickerBtn).setOnClickListener(this);
+        findViewById(R.id.projectButton).setOnClickListener(this);
         CHANNEL_ID = "channel ID";
         createNotificationChannel();
     }
@@ -45,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.stickerBtn:
                 openStickerActivity();
                 break;
+            case R.id.projectButton:
+                openProjectLoginActivity();
+                break;
         }
     }
 
@@ -60,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void openNewActivity() {
         Intent intent = new Intent(this, AtYourServiceActivity.class);
+        startActivity(intent);
+    }
+
+    public void openProjectLoginActivity() {
+        Intent intent = new Intent(this, ProjectLogin.class);
         startActivity(intent);
     }
 
