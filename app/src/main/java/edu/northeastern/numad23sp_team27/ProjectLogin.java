@@ -1,12 +1,18 @@
 package edu.northeastern.numad23sp_team27;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -33,6 +39,7 @@ public class ProjectLogin extends AppCompatActivity {
         createUserButton.setOnClickListener(v -> {
             getEmailPassword();
             if (verifyEmail(email) & !password.isEmpty()) {
+                Log.i("create", "Attempting to create new user");
                 createUser();
             } else {
                 loginToastMaker(verifyEmail(email), password.isEmpty());
@@ -74,14 +81,18 @@ public class ProjectLogin extends AppCompatActivity {
     }
 
     protected void createUser(){
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                user = task.getResult().getUser();
-                if (!(user == null)) {
-                    Toast.makeText(getApplicationContext(), "user creation successful", Toast.LENGTH_SHORT).show();
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(ProjectLogin.this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    user = task.getResult().getUser();
+                    if (!(user == null)) {
+                        Toast.makeText(getApplicationContext(), "user creation successful", Toast.LENGTH_SHORT).show();
+                        goToUserDashboard();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "user creation unsuccessful", Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(getApplicationContext(), "user creation unsuccessful", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -92,10 +103,15 @@ public class ProjectLogin extends AppCompatActivity {
                 user = task.getResult().getUser();
                 if (!(user == null)) {
                     Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
+                    goToUserDashboard();
                 }
             } else {
                 Toast.makeText(getApplicationContext(), "login unsuccessful", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void goToUserDashboard() {
+        startActivity(new Intent(this, UserDashboard.class));
     }
 }
