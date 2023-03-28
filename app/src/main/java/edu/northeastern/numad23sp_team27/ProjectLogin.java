@@ -7,12 +7,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -81,18 +77,15 @@ public class ProjectLogin extends AppCompatActivity {
     }
 
     protected void createUser(){
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(ProjectLogin.this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    user = task.getResult().getUser();
-                    if (!(user == null)) {
-                        Toast.makeText(getApplicationContext(), "user creation successful", Toast.LENGTH_SHORT).show();
-                        goToUserDashboard();
-                    }
-                } else {
-                    Toast.makeText(getApplicationContext(), "user creation unsuccessful", Toast.LENGTH_SHORT).show();
+        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(ProjectLogin.this, task -> {
+            if (task.isSuccessful()) {
+                user = task.getResult().getUser();
+                if (!(user == null)) {
+                    Toast.makeText(getApplicationContext(), "user creation successful", Toast.LENGTH_SHORT).show();
+                    goToUserDashboard();
                 }
+            } else {
+                Toast.makeText(getApplicationContext(), "user creation unsuccessful", Toast.LENGTH_SHORT).show();
             }
         });
     }
