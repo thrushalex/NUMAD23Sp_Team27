@@ -3,6 +3,7 @@ package edu.northeastern.numad23sp_team27;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,8 +22,12 @@ public class UserDashboard extends AppCompatActivity {
         user = FirebaseAuth.getInstance().getCurrentUser();
         welcomeTV = findViewById(R.id.welcomeTV);
 
-        String greeting = "Welcome, " + user.getDisplayName();
+        if (user != null) {
+            // Log.i("user", user.getEmail());
 
-        welcomeTV.setText(greeting);
+            String greeting = "Welcome, " + user.getEmail();
+
+            welcomeTV.setText(greeting);
+        }
     }
 }
