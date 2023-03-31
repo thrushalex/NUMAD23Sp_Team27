@@ -22,4 +22,5 @@
     <string name="create_account">Create Account</string>
     <string name="project">Project</string>
     <string name="profileSettingsBtn">Profile Settings</string>
+    <string name="user_icon_desc">generic image of a user</string>
 </resources>
