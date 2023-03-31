@@ -65,8 +65,13 @@ public class UserProfileSettings extends AppCompatActivity implements UpdateName
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
-            user.updateEmail(email);
-            user.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(displayName).build()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            String em = email == null ? user.getEmail() : email;
+            assert em != null;
+
+            String dName = displayName == null ? user.getDisplayName() : displayName;
+
+            user.updateEmail(em);
+            user.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(dName).build()).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     if (task.isSuccessful()) {
