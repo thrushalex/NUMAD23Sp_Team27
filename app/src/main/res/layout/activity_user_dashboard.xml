@@ -46,6 +46,14 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="20dp"/>
 
+            <Button
+                android:id="@+id/btnForums"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Forums"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"/>
+
 
         </LinearLayout>
 </ScrollView>

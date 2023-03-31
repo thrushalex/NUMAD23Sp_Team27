@@ -16,18 +16,28 @@ public class UserDashboard extends AppCompatActivity {
 
     FirebaseUser user;
     TextView welcomeTV;
+    Button profileSetBtn;
+    Button forums;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_dashboard);
 
-        Button profileSetBtn = findViewById(R.id.btnProfileSettings);
+        profileSetBtn = findViewById(R.id.btnProfileSettings);
+        forums = findViewById(R.id.btnForums);
 
         profileSetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 goToUserProfileSettings();
+            }
+        });
+
+        forums.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goToForums();
             }
         });
 
@@ -41,6 +51,10 @@ public class UserDashboard extends AppCompatActivity {
 
             welcomeTV.setText(greeting);
         }
+    }
+
+    private void goToForums() {
+        startActivity(new Intent(this, Forums.class));
     }
 
     private void goToUserProfileSettings() {
