@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="profileSettingsBtn">Profile Settings</string>
+    <string name="btnUpdateNameEmail">Update Name/Email</string>
+    <string name="btnChangePassword">Change Password</string>
 </resources>

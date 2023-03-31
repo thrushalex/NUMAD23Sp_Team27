@@ -23,4 +23,6 @@
     <string name="project">Project</string>
     <string name="profileSettingsBtn">Profile Settings</string>
     <string name="user_icon_desc">generic image of a user</string>
+    <string name="btnUpdateNameEmail">Update Name/Email</string>
+    <string name="btnChangePassword">Change Password</string>
 </resources>
