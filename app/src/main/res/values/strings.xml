@@ -25,4 +25,7 @@
     <string name="user_icon_desc">generic image of a user</string>
     <string name="btnUpdateNameEmail">Update Name/Email</string>
     <string name="btnChangePassword">Change Password</string>
+    <string name="updateDialog">Update</string>
+    <string name="updateDiag">Update</string>
+    <string name="cancel">Cancel</string>
 </resources>
