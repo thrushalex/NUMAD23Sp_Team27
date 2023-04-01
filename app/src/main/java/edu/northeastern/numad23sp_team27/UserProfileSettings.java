@@ -17,12 +17,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class UserProfileSettings extends AppCompatActivity implements UpdateNameEmailDialog.NameEmailDialogListener {
+public class UserProfileSettings extends AppCompatActivity implements UpdateNameEmailDialog.NameEmailDialogListener, ChangePasswordDialog.ChangePasswordDialogListener {
 
     TextView dispNameTV;
     TextView emailTV;
     Button updateBtn;
     Button changePBtn;
+    Button changePasswordBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,18 @@ public class UserProfileSettings extends AppCompatActivity implements UpdateName
                 showUpdateDialog();
             }
         });
+
+        changePBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showChangePasswordDialog();
+            }
+        });
+    }
+
+    private void showChangePasswordDialog() {
+        DialogFragment newFrag = new ChangePasswordDialog();
+        newFrag.show(getSupportFragmentManager(), "changePassword");
     }
 
     private void showUpdateDialog() {
@@ -90,6 +103,30 @@ public class UserProfileSettings extends AppCompatActivity implements UpdateName
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Toast.makeText(UserProfileSettings.this, "User Profile updated successfully", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog, String newPassword) {
+        changePassword(newPassword);
+    }
+
+    private void changePassword(String newPassword) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            if (newPassword.length() < 1) {
+                Toast.makeText(this, "New Password cannot be blank", Toast.LENGTH_SHORT).show();
+            } else {
+                user.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(UserProfileSettings.this, "Password updated successfully", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
