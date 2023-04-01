@@ -30,4 +30,8 @@
     <string name="cancel">Cancel</string>
     <string name="Forums">Go To Forums</string>
     <string name="pencil_icon">pencil icon</string>
+    <string name="submit_post">Submit Post</string>
+    <string name="add_diagram">Add Diagram</string>
+    <string name="body">Body</string>
+    <string name="title">Title</string>
 </resources>
