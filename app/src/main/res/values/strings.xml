@@ -34,4 +34,7 @@
     <string name="add_diagram">Add Diagram</string>
     <string name="body">Body</string>
     <string name="title">Title</string>
+    <string name="keep_tapping">Keep tapping.</string>
+    <string name="done">Done!</string>
+    <string name="drawing_canvas">Drawing Canvas</string>
 </resources>
