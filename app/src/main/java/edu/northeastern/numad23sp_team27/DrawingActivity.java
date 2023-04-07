@@ -38,6 +38,8 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
     private boolean navigateMode;
     private boolean drawMode;
     private boolean canvasMade;
+    private int xOffset;
+    private int yOffset;
     private ConstraintLayout constraintLayout;
 
     private GestureDetector gestureDetector;
@@ -124,12 +126,16 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
     public void scroll(String direction) {
         if (direction == "right") {
             mImageView.scrollBy(-100,0);
+            xOffset = xOffset + 100;
         } else if (direction == "left") {
             mImageView.scrollBy(100,0);
+            xOffset = xOffset - 100;
         } else if (direction == "up") {
             mImageView.scrollBy(0,100);
+            yOffset = yOffset - 100;
         } else if (direction == "down") {
             mImageView.scrollBy(0,-100);
+            yOffset = yOffset + 100;
         }
         View v = this.findViewById(android.R.id.content);
         v.invalidate();
@@ -147,9 +153,9 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
             if (event.getAction() == 0) {
                 View v = this.findViewById(R.id.imageView);
                 int x = (int)event.getX();
-                x = (int) (x - v.getX());
+                x = (int) (x - xOffset);
                 int y = (int)event.getY();
-                y = (int) (y - v.getY());
+                y = (int) (y - yOffset);
                 Paint tempPaint = new Paint();
                 tempPaint.setStyle(Paint.Style.STROKE);
                 tempPaint.setStrokeWidth(5);
@@ -165,6 +171,8 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
     public void makeCanvas(){
         Toast.makeText(getApplicationContext(), "Making new canvas", Toast.LENGTH_SHORT).show();
         View v = this.findViewById(R.id.imageView);
+        xOffset = (int) v.getX();
+        yOffset = (int) v.getY();
         int vWidth = v.getWidth();
         int vHeight = v.getHeight();
         mBitmap = Bitmap.createBitmap(vWidth, vHeight, Bitmap.Config.ARGB_8888);
