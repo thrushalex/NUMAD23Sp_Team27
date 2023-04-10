@@ -1,15 +1,16 @@
 package edu.northeastern.numad23sp_team27;
 
+import static android.graphics.Path.Direction.CW;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.Path;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -18,20 +19,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 
+import java.util.Objects;
+
 public class DrawingActivity extends AppCompatActivity implements View.OnTouchListener {
 
     private Canvas mCanvas;
-    private Paint mPaint = new Paint();
-    private Paint mPaintText = new Paint(Paint.UNDERLINE_TEXT_FLAG);
+    private final Paint mPaint = new Paint();
+    private final Paint mPaintText = new Paint(Paint.UNDERLINE_TEXT_FLAG);
     private Bitmap mBitmap;
     private ImageView mImageView;
-    private Rect mRect = new Rect();
-    private Rect mBounds = new Rect();
-    private static final int OFFSET = 120;
-    private int mOffset = OFFSET;
     private int mColorBackground;
-    private int mColorRectangle;
-    private int mColorAccent;
 
     //Used to tell whether user is aiming to scroll along image view,
     // or if they are indenting to add visual elements
@@ -51,17 +48,13 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
 
         mColorBackground = ResourcesCompat.getColor(getResources(),
                 R.color.colorBackground, null);
-        mColorRectangle = ResourcesCompat.getColor(getResources(),
-                R.color.colorRectangle, null);
-        mColorAccent = ResourcesCompat.getColor(getResources(),
-                R.color.colorAccent, null);
         mPaint.setColor(mColorBackground);
         mPaintText.setColor(
                 ResourcesCompat.getColor(getResources(),
                         R.color.colorPrimaryDark, null)
         );
         mPaintText.setTextSize(70);
-        mImageView = (ImageView) findViewById(R.id.imageView);
+        mImageView = findViewById(R.id.imageView);
         constraintLayout = findViewById(R.id.constraintLayout);
         navigateMode = false;
         drawMode = true;
@@ -94,46 +87,32 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
             }
         });
         constraintLayout.setOnTouchListener(this);
-        Switch onOffSwitch = (Switch)  findViewById(R.id.drawNavigateSwitch);
-        onOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    Toast.makeText(getApplicationContext(), "Switch on", Toast.LENGTH_SHORT).show();
-                    navigateMode = false;
-                    drawMode = true;
-                } else {
-                    Toast.makeText(getApplicationContext(), "Switch off", Toast.LENGTH_SHORT).show();
-                    navigateMode = true;
-                    drawMode = false;
-                }
+        Switch onOffSwitch = findViewById(R.id.drawNavigateSwitch);
+        onOffSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                Toast.makeText(getApplicationContext(), "Switch on", Toast.LENGTH_SHORT).show();
+                navigateMode = false;
+                drawMode = true;
+            } else {
+                Toast.makeText(getApplicationContext(), "Switch off", Toast.LENGTH_SHORT).show();
+                navigateMode = true;
+                drawMode = false;
             }
         });
         }
 
-    public void drawSomething(View view) {
-        int vWidth = view.getWidth();
-        int vHeight = view.getHeight();
-        mBitmap = Bitmap.createBitmap(vWidth, vHeight, Bitmap.Config.ARGB_8888);
-        mImageView.setImageBitmap(mBitmap);
-        mCanvas = new Canvas(mBitmap);
-        mCanvas.drawColor(mColorBackground);
-        mCanvas.drawText(getString(R.string.keep_tapping), 100, 100, mPaintText);
-        view.invalidate();
-    }
 
     public void scroll(String direction) {
-        if (direction == "right") {
+        if (Objects.equals(direction, "right")) {
             mImageView.scrollBy(-100,0);
             xOffset = xOffset + 100;
-        } else if (direction == "left") {
+        } else if (Objects.equals(direction, "left")) {
             mImageView.scrollBy(100,0);
             xOffset = xOffset - 100;
-        } else if (direction == "up") {
+        } else if (Objects.equals(direction, "up")) {
             mImageView.scrollBy(0,100);
             yOffset = yOffset - 100;
-        } else if (direction == "down") {
+        } else if (Objects.equals(direction, "down")) {
             mImageView.scrollBy(0,-100);
             yOffset = yOffset + 100;
         }
@@ -151,21 +130,57 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
             gestureDetector.onTouchEvent(event);
         } else if(drawMode) {
             if (event.getAction() == 0) {
-                View v = this.findViewById(R.id.imageView);
                 int x = (int)event.getX();
-                x = (int) (x - xOffset);
                 int y = (int)event.getY();
-                y = (int) (y - yOffset);
-                Paint tempPaint = new Paint();
-                tempPaint.setStyle(Paint.Style.STROKE);
-                tempPaint.setStrokeWidth(5);
-                tempPaint.setColor(Color.rgb(88, 50, 168));
-                mCanvas.drawRect(x - 100,y + 100,x + 100,y - 100,tempPaint);
-                mCanvas.drawRect(x - 80,y + 80,x + 80,y - 80,tempPaint);
-                v.invalidate();
+                drawRectangle(x,y, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
             }
         }
         return true;
+    }
+
+    public void drawRectangle(int x, int y, String textToDraw){
+        View v = this.findViewById(R.id.imageView);
+        //offsets used to account for vertical and horizontal scrolling
+        x = x - xOffset;
+        y = y - yOffset;
+        Paint tempPaint = new Paint();
+        tempPaint.setStyle(Paint.Style.STROKE);
+        tempPaint.setStrokeWidth(5);
+        tempPaint.setColor(Color.rgb(88, 50, 168));
+        mCanvas.drawRect(x - 300,y + 200,x + 300,y - 200,tempPaint);
+        tempPaint.setTextSize(50);
+        tempPaint.setStrokeWidth(3);
+        Path path = new Path();
+        path.addRect((x-280), (y+180), (x+280), (y-180), CW);
+        int lineCount = textToDraw.length() / 20;
+        int mod = lineCount % 20;
+        int start = 0;
+        int end = 20;
+        if (textToDraw.length() > 0) {
+            if (mod > 0 | textToDraw.length() <= 20) {
+                lineCount += 1;
+                if (textToDraw.length() <= 20) {
+                    end = textToDraw.length();
+                }
+            }
+            int initialVerticalAdjustment = 150;
+            for (int i = 0; i < lineCount; i++) {
+                if (i <= 6) {
+                    mCanvas.drawText(textToDraw.substring(start,end),x-280,y-initialVerticalAdjustment, tempPaint);
+                    initialVerticalAdjustment = initialVerticalAdjustment - 50;
+                    if(end + 1 < textToDraw.length()){
+                        start = end + 1;
+                        if (textToDraw.substring(end).length() <= 20) {
+                            end = textToDraw.length();
+                        } else {
+                            end = start + 20;
+                        }
+
+                    }
+                }
+            }
+        }
+        v.invalidate();
     }
 
     public void makeCanvas(){
