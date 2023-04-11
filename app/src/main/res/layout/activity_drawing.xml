@@ -4,33 +4,57 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="16dp"
     android:id="@+id/constraintLayout"
     tools:context=".DrawingActivity">
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="h,1:1"
-        app:layout_constraintVertical_bias=".2"
         android:contentDescription="@string/drawing_canvas"
         android:src="@drawable/empty_placeholder"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="h,1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias=".2" />
 
     <Switch
-        android:textOn="On"
-        android:textOff="Off"
-        android:checked="true"
         android:id="@+id/drawNavigateSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checked="true"
         android:minHeight="48dp"
         android:text="On to Draw\n Off to Navigate"
+        android:textOff="Off"
+        android:textOn="On"
+        app:layout_constraintHorizontal_bias=".2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <Button
+        android:id="@+id/shapeSelectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_shape"
+        app:layout_constraintBottom_toTopOf="@+id/colorSelectButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/drawNavigateSwitch"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <Button
+        android:id="@+id/colorSelectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_color"
+        app:layout_constraintVertical_bias=".8"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/drawNavigateSwitch"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
 

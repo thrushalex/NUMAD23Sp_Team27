@@ -37,4 +37,7 @@
     <string name="keep_tapping">Keep tapping.</string>
     <string name="done">Done!</string>
     <string name="drawing_canvas">Drawing Canvas</string>
+    <string name="pick_shape">Pick Shape</string>
+    <string name="select_color">Select Color</string>
+    <string name="select_shape">Select Shape</string>
 </resources>
