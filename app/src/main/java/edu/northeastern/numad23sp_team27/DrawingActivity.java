@@ -2,6 +2,7 @@ package edu.northeastern.numad23sp_team27;
 
 import static android.graphics.Path.Direction.CW;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -42,11 +44,14 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
 
     private GestureDetector gestureDetector;
 
+    private Button shapeColorButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawing);
 
+        shapeColorButton = findViewById(R.id.shapeColorSelectButton);
         mColorBackground = ResourcesCompat.getColor(getResources(),
                 R.color.colorBackground, null);
         mPaint.setColor(mColorBackground);
@@ -98,6 +103,12 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
                 Toast.makeText(getApplicationContext(), "Switch off", Toast.LENGTH_SHORT).show();
                 navigateMode = true;
                 drawMode = false;
+            }
+        });
+        shapeColorButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startChooseShapeActivity();
             }
         });
         }
@@ -183,5 +194,10 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         mBitmap = Bitmap.createBitmap(vWidth, vHeight, Bitmap.Config.ARGB_8888);
         mImageView.setImageBitmap(mBitmap);
         mCanvas = new Canvas(mBitmap);
+    }
+
+    public void startChooseShapeActivity() {
+        Intent intent = new Intent(this, ChooseShape.class);
+        startActivity(intent);
     }
 }
