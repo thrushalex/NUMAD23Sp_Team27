@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -130,54 +131,43 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
             gestureDetector.onTouchEvent(event);
         } else if(drawMode) {
             if (event.getAction() == 0) {
-                int x = (int)event.getX();
-                int y = (int)event.getY();
-                drawRectangle(x,y, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+                int x = (int)event.getX() - xOffset;
+                int y = (int)event.getY() - yOffset;
+                drawRectangle(x,y,"Wireless Access Point Bleep Bloop Blorp");
             }
         }
         return true;
     }
 
     public void drawRectangle(int x, int y, String textToDraw){
+        //Draw rectangle
+        Rect r = new Rect(x-200, y+100, x+200, y-100);
         View v = this.findViewById(R.id.imageView);
-        //offsets used to account for vertical and horizontal scrolling
-        x = x - xOffset;
-        y = y - yOffset;
-        Paint tempPaint = new Paint();
-        tempPaint.setStyle(Paint.Style.STROKE);
-        tempPaint.setStrokeWidth(5);
-        tempPaint.setColor(Color.rgb(88, 50, 168));
-        mCanvas.drawRect(x - 300,y + 200,x + 300,y - 200,tempPaint);
-        tempPaint.setTextSize(50);
-        tempPaint.setStrokeWidth(3);
-        Path path = new Path();
-        path.addRect((x-280), (y+180), (x+280), (y-180), CW);
-        int lineCount = textToDraw.length() / 20;
-        int mod = lineCount % 20;
-        int start = 0;
-        int end = 20;
-        if (textToDraw.length() > 0) {
-            if (mod > 0 | textToDraw.length() <= 20) {
-                lineCount += 1;
-                if (textToDraw.length() <= 20) {
-                    end = textToDraw.length();
-                }
-            }
-            int initialVerticalAdjustment = 150;
-            for (int i = 0; i < lineCount; i++) {
-                if (i <= 6) {
-                    mCanvas.drawText(textToDraw.substring(start,end),x-280,y-initialVerticalAdjustment, tempPaint);
-                    initialVerticalAdjustment = initialVerticalAdjustment - 50;
-                    if(end + 1 < textToDraw.length()){
-                        start = end + 1;
-                        if (textToDraw.substring(end).length() <= 20) {
-                            end = textToDraw.length();
-                        } else {
-                            end = start + 20;
-                        }
+        Paint textPaint = new Paint();
+        textPaint.setStyle(Paint.Style.STROKE);
+        textPaint.setStrokeWidth(5);
+        mCanvas.drawRect(r,textPaint);
 
-                    }
-                }
+        //Set Paint object for text
+        textPaint.setTextSize(70);
+        textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+        int width = r.width();
+        int start = 0;
+        //Based on size of text box and font size
+        int maxRows = 3;
+        int verticalOffset = 60;
+        int offSetSize = 60;
+        String remainingText = textToDraw;
+        //Loop to draw text within rectangle dimentions
+        for (int i = 0; i < maxRows; i++) {
+            int numOfChars = textPaint.breakText(remainingText,true,width,null);
+            mCanvas.drawText(remainingText,start,start+numOfChars,r.exactCenterX(),r.bottom + verticalOffset,textPaint);
+            verticalOffset = verticalOffset + offSetSize;
+            if (remainingText.length()-numOfChars > 0) {
+                remainingText = remainingText.substring(numOfChars+1);
+            } else {
+                break;
             }
         }
         v.invalidate();
