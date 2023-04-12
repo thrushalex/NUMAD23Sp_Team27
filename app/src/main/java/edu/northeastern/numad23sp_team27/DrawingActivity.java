@@ -2,7 +2,9 @@ package edu.northeastern.numad23sp_team27;
 
 import static android.graphics.Path.Direction.CW;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -45,6 +47,11 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
     private GestureDetector gestureDetector;
 
     private Button shapeColorButton;
+    private String shape;
+    private String color;
+    private String shapeText;
+    private static final String preferences = "projTalkPreferences";
+    SharedPreferences sharedpreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +72,10 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         navigateMode = false;
         drawMode = true;
         canvasMade = false;
+        shape = "rectangle";
+        color = "black";
+        shapeText = "";
+        sharedpreferences = getSharedPreferences(preferences, Context.MODE_PRIVATE);
         gestureDetector = new GestureDetector(this,new OnSwipeListener(){
 
             @Override
@@ -111,8 +122,28 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
                 startChooseShapeActivity();
             }
         });
-        }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadShapeColor();
+    }
+
+    public void loadShapeColor(){
+        String tempColor = sharedpreferences.getString("color", "DEFAULT");
+        String tempShape = sharedpreferences.getString("shape", "DEFAULT");
+        String tempShapeText = sharedpreferences.getString("shapeText", "DEFAULT");
+        if (!tempColor.equals("DEFAULT")) {
+            color = tempColor;
+        }
+        if (!tempShape.equals("DEFAULT")) {
+            shape = tempColor;
+        }
+        if (!tempShapeText.equals("DEFAULT")) {
+            shapeText = tempShapeText;
+        }
+    }
 
     public void scroll(String direction) {
         if (Objects.equals(direction, "right")) {
@@ -144,7 +175,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
             if (event.getAction() == 0) {
                 int x = (int)event.getX() - xOffset;
                 int y = (int)event.getY() - yOffset;
-                drawRectangle(x,y,"Wireless Access Point Bleep Bloop Blorp");
+                drawRectangle(x,y,shapeText);
             }
         }
         return true;
@@ -163,7 +194,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         textPaint.setTextSize(70);
         textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         textPaint.setTextAlign(Paint.Align.CENTER);
-        int width = r.width();
+        int width = r.width() - 40;
         int start = 0;
         //Based on size of text box and font size
         int maxRows = 3;
