@@ -194,7 +194,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         textPaint.setTextSize(70);
         textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         textPaint.setTextAlign(Paint.Align.CENTER);
-        int width = r.width() - 40;
+        int width = r.width();
         int start = 0;
         //Based on size of text box and font size
         int maxRows = 3;
@@ -207,7 +207,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
             mCanvas.drawText(remainingText,start,start+numOfChars,r.exactCenterX(),r.bottom + verticalOffset,textPaint);
             verticalOffset = verticalOffset + offSetSize;
             if (remainingText.length()-numOfChars > 0) {
-                remainingText = remainingText.substring(numOfChars+1);
+                remainingText = remainingText.substring(numOfChars);
             } else {
                 break;
             }
