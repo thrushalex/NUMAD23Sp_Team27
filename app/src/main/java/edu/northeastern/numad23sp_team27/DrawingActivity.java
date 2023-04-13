@@ -1,15 +1,11 @@
 package edu.northeastern.numad23sp_team27;
 
-import static android.graphics.Path.Direction.CW;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.GestureDetector;
@@ -22,21 +18,16 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.res.ResourcesCompat;
+import androidx.core.content.ContextCompat;
 
 import java.util.Objects;
 
 public class DrawingActivity extends AppCompatActivity implements View.OnTouchListener {
 
-    private Canvas mCanvas;
-    private final Paint mPaint = new Paint();
-    private final Paint mPaintText = new Paint(Paint.UNDERLINE_TEXT_FLAG);
-    private Bitmap mBitmap;
-    private ImageView mImageView;
-    private int mColorBackground;
+    private Canvas drawingCanvas;
+    private Bitmap drawingBitmap;
+    private ImageView drawingImageView;
 
-    //Used to tell whether user is aiming to scroll along image view,
-    // or if they are indenting to add visual elements
     private boolean navigateMode;
     private boolean drawMode;
     private boolean canvasMade;
@@ -45,7 +36,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
     private ConstraintLayout constraintLayout;
 
     private GestureDetector gestureDetector;
-
+    private Paint paint;
     private Button shapeColorButton;
     private String shape;
     private String color;
@@ -59,16 +50,9 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         setContentView(R.layout.activity_drawing);
 
         shapeColorButton = findViewById(R.id.shapeColorSelectButton);
-        mColorBackground = ResourcesCompat.getColor(getResources(),
-                R.color.colorBackground, null);
-        mPaint.setColor(mColorBackground);
-        mPaintText.setColor(
-                ResourcesCompat.getColor(getResources(),
-                        R.color.colorPrimaryDark, null)
-        );
-        mPaintText.setTextSize(70);
-        mImageView = findViewById(R.id.imageView);
+        drawingImageView = findViewById(R.id.imageView);
         constraintLayout = findViewById(R.id.constraintLayout);
+        paint = new Paint();
         navigateMode = false;
         drawMode = true;
         canvasMade = false;
@@ -83,7 +67,6 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
                 if (direction==Direction.up){
                     Toast.makeText(getApplicationContext(), "Swipe Up", Toast.LENGTH_SHORT).show();
                     scroll("up");
-
                 }
 
                 if (direction==Direction.down){
@@ -136,9 +119,10 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         String tempShapeText = sharedpreferences.getString("shapeText", "DEFAULT");
         if (!tempColor.equals("DEFAULT")) {
             color = tempColor;
+            setColor(color);
         }
         if (!tempShape.equals("DEFAULT")) {
-            shape = tempColor;
+            shape = tempShape;
         }
         if (!tempShapeText.equals("DEFAULT")) {
             shapeText = tempShapeText;
@@ -147,20 +131,32 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
 
     public void scroll(String direction) {
         if (Objects.equals(direction, "right")) {
-            mImageView.scrollBy(-100,0);
+            drawingImageView.scrollBy(-100,0);
             xOffset = xOffset + 100;
         } else if (Objects.equals(direction, "left")) {
-            mImageView.scrollBy(100,0);
+            drawingImageView.scrollBy(100,0);
             xOffset = xOffset - 100;
         } else if (Objects.equals(direction, "up")) {
-            mImageView.scrollBy(0,100);
+            drawingImageView.scrollBy(0,100);
             yOffset = yOffset - 100;
         } else if (Objects.equals(direction, "down")) {
-            mImageView.scrollBy(0,-100);
+            drawingImageView.scrollBy(0,-100);
             yOffset = yOffset + 100;
         }
         View v = this.findViewById(android.R.id.content);
         v.invalidate();
+    }
+
+    public void setColor(String color){
+        if(color.equals("blue")){
+            paint.setColor(getResources().getColor(R.color.blue));
+        }
+        if(color.equals("black")){
+            paint.setColor(getResources().getColor(R.color.black));
+        }
+        if(color.equals("red")){
+            paint.setColor(getResources().getColor(R.color.red));
+        }
     }
 
     @Override
@@ -185,15 +181,14 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         //Draw rectangle
         Rect r = new Rect(x-200, y+100, x+200, y-100);
         View v = this.findViewById(R.id.imageView);
-        Paint textPaint = new Paint();
-        textPaint.setStyle(Paint.Style.STROKE);
-        textPaint.setStrokeWidth(5);
-        mCanvas.drawRect(r,textPaint);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+        drawingCanvas.drawRect(r,paint);
 
         //Set Paint object for text
-        textPaint.setTextSize(70);
-        textPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        textPaint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(70);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setTextAlign(Paint.Align.CENTER);
         int width = r.width();
         int start = 0;
         //Based on size of text box and font size
@@ -203,8 +198,8 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         String remainingText = textToDraw;
         //Loop to draw text within rectangle dimentions
         for (int i = 0; i < maxRows; i++) {
-            int numOfChars = textPaint.breakText(remainingText,true,width,null);
-            mCanvas.drawText(remainingText,start,start+numOfChars,r.exactCenterX(),r.bottom + verticalOffset,textPaint);
+            int numOfChars = paint.breakText(remainingText,true,width,null);
+            drawingCanvas.drawText(remainingText,start,start+numOfChars,r.exactCenterX(),r.bottom + verticalOffset,paint);
             verticalOffset = verticalOffset + offSetSize;
             if (remainingText.length()-numOfChars > 0) {
                 remainingText = remainingText.substring(numOfChars);
@@ -222,9 +217,9 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         yOffset = (int) v.getY();
         int vWidth = v.getWidth();
         int vHeight = v.getHeight();
-        mBitmap = Bitmap.createBitmap(vWidth, vHeight, Bitmap.Config.ARGB_8888);
-        mImageView.setImageBitmap(mBitmap);
-        mCanvas = new Canvas(mBitmap);
+        drawingBitmap = Bitmap.createBitmap(vWidth, vHeight, Bitmap.Config.ARGB_8888);
+        drawingImageView.setImageBitmap(drawingBitmap);
+        drawingCanvas = new Canvas(drawingBitmap);
     }
 
     public void startChooseShapeActivity() {
