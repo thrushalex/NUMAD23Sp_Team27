@@ -22,6 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class DrawingActivity extends AppCompatActivity implements View.OnTouchListener {
@@ -40,11 +42,15 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
     private GestureDetector gestureDetector;
     private Paint paint;
     private Button shapeColorButton;
+    private Button undoButton;
+    private Button redoButton;
     private String shape;
     private String color;
     private String shapeText;
+    private ArrayList<Bitmap> undoStack;
     private static final String preferences = "projTalkPreferences";
-    SharedPreferences sharedpreferences;
+    private SharedPreferences sharedpreferences;
+    private final int undoRedoMaxSize = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +58,8 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         setContentView(R.layout.activity_drawing);
 
         shapeColorButton = findViewById(R.id.shapeColorSelectButton);
+        undoButton = findViewById(R.id.undoButton);
+        redoButton = findViewById(R.id.redoButton);
         drawingImageView = findViewById(R.id.imageView);
         constraintLayout = findViewById(R.id.constraintLayout);
         paint = new Paint();
@@ -61,6 +69,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         shape = "rectangle";
         color = "black";
         shapeText = "";
+        undoStack = new ArrayList<>();
         sharedpreferences = getSharedPreferences(preferences, Context.MODE_PRIVATE);
         gestureDetector = new GestureDetector(this,new OnSwipeListener(){
 
