@@ -6,7 +6,9 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -171,7 +173,15 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
             if (event.getAction() == 0) {
                 int x = (int)event.getX() - xOffset;
                 int y = (int)event.getY() - yOffset;
-                drawRectangle(x,y,shapeText);
+                if(shape.equals("rectangle")){
+                    drawRectangle(x,y,shapeText);
+                }
+                if(shape.equals("oval")){
+                    drawOval(x,y,shapeText);
+                }
+                if(shape.equals("triangle")){
+                    drawTriangle(x,y,shapeText);
+                }
             }
         }
         return true;
@@ -197,6 +207,80 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         int offSetSize = 60;
         String remainingText = textToDraw;
         //Loop to draw text within rectangle dimentions
+        for (int i = 0; i < maxRows; i++) {
+            int numOfChars = paint.breakText(remainingText,true,width,null);
+            drawingCanvas.drawText(remainingText,start,start+numOfChars,r.exactCenterX(),r.bottom + verticalOffset,paint);
+            verticalOffset = verticalOffset + offSetSize;
+            if (remainingText.length()-numOfChars > 0) {
+                remainingText = remainingText.substring(numOfChars);
+            } else {
+                break;
+            }
+        }
+        v.invalidate();
+    }
+
+    public void drawOval(int x, int y, String textToDraw){
+        //Draw oval
+        Rect r = new Rect(x-200, y+100, x+200, y-100);
+        RectF rectF = new RectF(x-250, y+180, x+250, y-180);
+
+        View v = this.findViewById(R.id.imageView);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+        drawingCanvas.drawOval(rectF, paint);
+
+        //Set Paint object for text
+        paint.setTextSize(70);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setTextAlign(Paint.Align.CENTER);
+        int width = r.width();
+        int start = 0;
+        //Based on size of text box and font size
+        int maxRows = 3;
+        int verticalOffset = 60;
+        int offSetSize = 60;
+        String remainingText = textToDraw;
+        //Loop to draw text within oval dimensions
+        for (int i = 0; i < maxRows; i++) {
+            int numOfChars = paint.breakText(remainingText,true,width,null);
+            drawingCanvas.drawText(remainingText,start,start+numOfChars,r.exactCenterX(),r.bottom + verticalOffset,paint);
+            verticalOffset = verticalOffset + offSetSize;
+            if (remainingText.length()-numOfChars > 0) {
+                remainingText = remainingText.substring(numOfChars);
+            } else {
+                break;
+            }
+        }
+        v.invalidate();
+    }
+
+    public void drawTriangle(int x, int y, String textToDraw){
+        //Draw triangle
+        Rect r = new Rect(x-200, y+100, x+200, y-100);
+        int width = r.width();
+        Path path = new Path();
+        path.moveTo(x, y - width); // Top
+        path.lineTo(x - width, y + width/2); // Bottom left
+        path.lineTo(x + width, y + width/2); // Bottom right
+        path.lineTo(x, y - width); // Back to Top
+        path.close();
+        View v = this.findViewById(R.id.imageView);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+        drawingCanvas.drawPath(path, paint);
+
+        //Set Paint object for text
+        paint.setTextSize(70);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setTextAlign(Paint.Align.CENTER);
+        int start = 0;
+        //Based on size of text box and font size
+        int maxRows = 3;
+        int verticalOffset = 60;
+        int offSetSize = 60;
+        String remainingText = textToDraw;
+        //Loop to draw text within triangle dimensions
         for (int i = 0; i < maxRows; i++) {
             int numOfChars = paint.breakText(remainingText,true,width,null);
             drawingCanvas.drawText(remainingText,start,start+numOfChars,r.exactCenterX(),r.bottom + verticalOffset,paint);
