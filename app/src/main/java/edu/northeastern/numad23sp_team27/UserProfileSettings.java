@@ -1,9 +1,12 @@
 package edu.northeastern.numad23sp_team27;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -63,12 +66,47 @@ public class UserProfileSettings extends AppCompatActivity implements UpdateName
         deleteAcctBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteAccount();
+                showDeleteAccountDialog();
             }
         });
     }
 
+    private void showDeleteAccountDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Confirm Account Deletion")
+                .setMessage("Are you sure you want to delete your account? This cannot be undone")
+                .setCancelable(false)
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        deleteAccount();
+                        startActivity(new Intent(UserProfileSettings.this, ProjectLogin.class));
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .show();
+    }
+
     private void deleteAccount() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null) {
+            user.delete()
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(UserProfileSettings.this, "Account deleted successfully!", Toast.LENGTH_SHORT).show();
+                                Log.d("deleteUser", "User account deleted.");
+                            }
+                        }
+                    });
+        }
     }
 
     private void showChangePasswordDialog() {
@@ -91,14 +129,17 @@ public class UserProfileSettings extends AppCompatActivity implements UpdateName
 
         if (user != null) {
             if (email.length() < 1) {
-                user.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(displayName).build()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(UserProfileSettings.this, "User Profile updated successfully", Toast.LENGTH_SHORT).show();
+                if (displayName.length() > 0) {
+                    user.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(displayName).build()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(UserProfileSettings.this, "User Profile updated successfully", Toast.LENGTH_SHORT).show();
+                                startActivity(getIntent());
+                            }
                         }
-                    }
-                });
+                    });
+                }
             } else {
                 user.updateEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -109,14 +150,18 @@ public class UserProfileSettings extends AppCompatActivity implements UpdateName
                     }
                 });
 
-                user.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(displayName).build()).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(UserProfileSettings.this, "User Profile updated successfully", Toast.LENGTH_SHORT).show();
+                if (displayName.length() > 0) {
+                    user.updateProfile(new UserProfileChangeRequest.Builder().setDisplayName(displayName).build()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(UserProfileSettings.this, "User Profile updated successfully", Toast.LENGTH_SHORT).show();
+                            }
                         }
-                    }
-                });
+                    });
+                }
+
+                startActivity(getIntent());
             }
         }
     }
