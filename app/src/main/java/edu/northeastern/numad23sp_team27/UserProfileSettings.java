@@ -73,13 +73,14 @@ public class UserProfileSettings extends AppCompatActivity implements UpdateName
 
     private void showDeleteAccountDialog() {
         new AlertDialog.Builder(this)
-                .setTitle("Confirm Account Deletion")
-                .setMessage("Are you sure you want to delete your account? This cannot be undone")
+                .setTitle("Confirm Deletion")
+                .setMessage("Are you sure? This cannot be undone")
                 .setCancelable(false)
                 .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         deleteAccount();
+                        finish();
                         startActivity(new Intent(UserProfileSettings.this, ProjectLogin.class));
                     }
                 })
@@ -135,7 +136,9 @@ public class UserProfileSettings extends AppCompatActivity implements UpdateName
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Toast.makeText(UserProfileSettings.this, "User Profile updated successfully", Toast.LENGTH_SHORT).show();
+                                finish();
                                 startActivity(getIntent());
+                                overridePendingTransition(0, 0);
                             }
                         }
                     });
@@ -161,7 +164,9 @@ public class UserProfileSettings extends AppCompatActivity implements UpdateName
                     });
                 }
 
+                finish();
                 startActivity(getIntent());
+                overridePendingTransition(0, 0);
             }
         }
     }
