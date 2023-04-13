@@ -23,7 +23,7 @@ public class UserProfileSettings extends AppCompatActivity implements UpdateName
     TextView emailTV;
     Button updateBtn;
     Button changePBtn;
-    Button changePasswordBtn;
+    Button deleteAcctBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +34,7 @@ public class UserProfileSettings extends AppCompatActivity implements UpdateName
         emailTV = findViewById(R.id.emailTV);
         updateBtn = findViewById(R.id.updateNameEmailBtn);
         changePBtn = findViewById(R.id.changePasswordBtn);
+        deleteAcctBtn = findViewById(R.id.deleteAcctBtn);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -58,6 +59,16 @@ public class UserProfileSettings extends AppCompatActivity implements UpdateName
                 showChangePasswordDialog();
             }
         });
+
+        deleteAcctBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteAccount();
+            }
+        });
+    }
+
+    private void deleteAccount() {
     }
 
     private void showChangePasswordDialog() {
