@@ -125,15 +125,37 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         undoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                redoStack.add(undoStack.get(0));
-                undoStack.remove(0);
-                drawCommandsLog.remove(drawCommandsLog.size() - 1);
-                makeCanvas();
-                for (int i = 0; i < drawCommandsLog.size(); i++) {
-                    deserializeDraw(drawCommandsLog.get(i));
-                    drawShape(xCoordinate, yCoordinate, shapeName,shapeText);
+                if (undoStack.size() > 0) {
+                    if (redoStack.size() == undoRedoMaxSize) {
+                        redoStack.remove(redoStack.size() - 1);
+                    }
+                    redoStack.add(0,undoStack.get(0));
+                    undoStack.remove(0);
+                    drawCommandsLog.remove(drawCommandsLog.size() - 1);
+                    makeCanvas();
+                    for (int i = 0; i < drawCommandsLog.size(); i++) {
+                        deserializeDraw(drawCommandsLog.get(i));
+                        drawShape(xCoordinate, yCoordinate, shapeName, shapeText);
+                    }
                 }
-
+            }
+        });
+        redoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (redoStack.size() > 0) {
+                    if (undoStack.size() == undoRedoMaxSize) {
+                        undoStack.remove(undoStack.size() - 1);
+                    }
+                    undoStack.add(redoStack.get(0));
+                    drawCommandsLog.add(redoStack.get(0));
+                    redoStack.remove(0);
+                    makeCanvas();
+                    for (int i = 0; i < drawCommandsLog.size(); i++) {
+                        deserializeDraw(drawCommandsLog.get(i));
+                        drawShape(xCoordinate, yCoordinate, shapeName, shapeText);
+                    }
+                }
             }
         });
     }
@@ -204,7 +226,11 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
                 yCoordinate = (int)event.getY() - yOffset;
                 drawShape(xCoordinate, yCoordinate,shapeName,shapeText);
                 String serializedDrawCommand = serializeDraw(xCoordinate, yCoordinate,shapeName,shapeText);
+                if (undoStack.size() == undoRedoMaxSize) {
+                    undoStack.remove(undoStack.size() - 1);
+                }
                 undoStack.add(0,serializedDrawCommand);
+                redoStack = new ArrayList<>();
                 drawCommandsLog.add(serializedDrawCommand);
             }
         }
@@ -370,7 +396,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
     }
 
     public void makeCanvas(){
-        Toast.makeText(getApplicationContext(), "Making new canvas", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext(), "Making new canvas", Toast.LENGTH_SHORT).show();
         View v = this.findViewById(R.id.imageView);
         xOffset = (int) v.getX();
         yOffset = (int) v.getY();
