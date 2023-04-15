@@ -44,10 +44,14 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
     private Button shapeColorButton;
     private Button undoButton;
     private Button redoButton;
-    private String shape;
+    private String shapeName;
     private String color;
     private String shapeText;
-    private ArrayList<Bitmap> undoStack;
+    private int xCoordinate;
+    private int yCoordinate;
+    private ArrayList<String> undoStack;
+    private ArrayList<String> redoStack;
+    private ArrayList<String> drawCommandsLog;
     private static final String preferences = "projTalkPreferences";
     private SharedPreferences sharedpreferences;
     private final int undoRedoMaxSize = 10;
@@ -66,10 +70,12 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         navigateMode = false;
         drawMode = true;
         canvasMade = false;
-        shape = "rectangle";
+        shapeName = "rectangle";
         color = "black";
         shapeText = "";
+        drawCommandsLog = new ArrayList<>();
         undoStack = new ArrayList<>();
+        redoStack = new ArrayList<>();
         sharedpreferences = getSharedPreferences(preferences, Context.MODE_PRIVATE);
         gestureDetector = new GestureDetector(this,new OnSwipeListener(){
 
@@ -116,6 +122,20 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
                 startChooseShapeActivity();
             }
         });
+        undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                redoStack.add(undoStack.get(0));
+                undoStack.remove(0);
+                drawCommandsLog.remove(drawCommandsLog.size() - 1);
+                makeCanvas();
+                for (int i = 0; i < drawCommandsLog.size(); i++) {
+                    deserializeDraw(drawCommandsLog.get(i));
+                    drawShape(xCoordinate, yCoordinate, shapeName,shapeText);
+                }
+
+            }
+        });
     }
 
     @Override
@@ -133,7 +153,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
             setColor(color);
         }
         if (!tempShape.equals("DEFAULT")) {
-            shape = tempShape;
+            shapeName = tempShape;
         }
         if (!tempShapeText.equals("DEFAULT")) {
             shapeText = tempShapeText;
@@ -180,20 +200,66 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
             gestureDetector.onTouchEvent(event);
         } else if(drawMode) {
             if (event.getAction() == 0) {
-                int x = (int)event.getX() - xOffset;
-                int y = (int)event.getY() - yOffset;
-                if(shape.equals("rectangle")){
-                    drawRectangle(x,y,shapeText);
-                }
-                if(shape.equals("oval")){
-                    drawOval(x,y,shapeText);
-                }
-                if(shape.equals("triangle")){
-                    drawTriangle(x,y,shapeText);
-                }
+                xCoordinate = (int)event.getX() - xOffset;
+                yCoordinate = (int)event.getY() - yOffset;
+                drawShape(xCoordinate, yCoordinate,shapeName,shapeText);
+                String serializedDrawCommand = serializeDraw(xCoordinate, yCoordinate,shapeName,shapeText);
+                undoStack.add(0,serializedDrawCommand);
+                drawCommandsLog.add(serializedDrawCommand);
             }
         }
         return true;
+    }
+
+    public void drawShape(int x, int y, String shapeName, String textToDraw){
+        if(shapeName.equals("rectangle")){
+            drawRectangle(x,y,textToDraw);
+        }
+        if(shapeName.equals("oval")){
+            drawOval(x,y,textToDraw);
+        }
+        if(shapeName.equals("triangle")){
+            drawTriangle(x,y,textToDraw);
+        }
+    }
+
+    public String serializeDraw(int xCoordinate, int yCoordinate, String shapeName, String shapeText) {
+        String drawCommandString = Integer.toString(xCoordinate);
+        drawCommandString += ",";
+        drawCommandString += Integer.toString(yCoordinate);
+        drawCommandString += ",";
+        drawCommandString += shapeName;
+        if (!shapeText.equals("")) {
+            drawCommandString += ",";
+            drawCommandString += shapeText;
+        }
+        return drawCommandString;
+    }
+
+    public void deserializeDraw(String serializedDrawString){
+        int groupNumber = 1;
+        //default to empty string in case text not provided
+        shapeText = "";
+
+        String subString = "";
+        for (int i = 0; i < serializedDrawString.length(); i++) {
+            if (!(serializedDrawString.charAt(i) == ",".charAt(0))) {
+                subString += serializedDrawString.charAt(i);
+                if (groupNumber == 1) {
+                    xCoordinate =  Integer.parseInt(subString);
+                } else if (groupNumber == 2) {
+                    yCoordinate =  Integer.parseInt(subString);
+                } else if (groupNumber == 3) {
+                    shapeName =  subString;
+                } else if (groupNumber == 4) {
+                    shapeText =  subString;
+                }
+            } else {
+                groupNumber += 1;
+                subString = "";
+            }
+        }
+
     }
 
     public void drawRectangle(int x, int y, String textToDraw){
