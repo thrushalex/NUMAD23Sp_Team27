@@ -20,9 +20,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -82,22 +80,18 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
             @Override
             public boolean onSwipe(Direction direction) {
                 if (direction==Direction.up){
-                    Toast.makeText(getApplicationContext(), "Swipe Up", Toast.LENGTH_SHORT).show();
                     scroll("up");
                 }
 
                 if (direction==Direction.down){
-                    Toast.makeText(getApplicationContext(), "Swipe Down", Toast.LENGTH_SHORT).show();
                     scroll("down");
                 }
 
                 if (direction==Direction.left){
-                    Toast.makeText(getApplicationContext(), "Swipe Left", Toast.LENGTH_SHORT).show();
                     scroll("left");
                 }
 
                 if (direction==Direction.right){
-                    Toast.makeText(getApplicationContext(), "Swipe Right", Toast.LENGTH_SHORT).show();
                     scroll("right");
                 }
                 return true;
@@ -107,54 +101,43 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         Switch onOffSwitch = findViewById(R.id.drawNavigateSwitch);
         onOffSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                Toast.makeText(getApplicationContext(), "Switch on", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Draw mode on", Toast.LENGTH_SHORT).show();
                 navigateMode = false;
                 drawMode = true;
             } else {
-                Toast.makeText(getApplicationContext(), "Switch off", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Draw mode off", Toast.LENGTH_SHORT).show();
                 navigateMode = true;
                 drawMode = false;
             }
         });
-        shapeColorButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startChooseShapeActivity();
-            }
-        });
-        undoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (undoStack.size() > 0) {
-                    if (redoStack.size() == undoRedoMaxSize) {
-                        redoStack.remove(redoStack.size() - 1);
-                    }
-                    redoStack.add(0,undoStack.get(0));
-                    undoStack.remove(0);
-                    drawCommandsLog.remove(drawCommandsLog.size() - 1);
-                    makeCanvas();
-                    for (int i = 0; i < drawCommandsLog.size(); i++) {
-                        deserializeDraw(drawCommandsLog.get(i));
-                        drawShape(xCoordinate, yCoordinate, shapeName, shapeText);
-                    }
+        shapeColorButton.setOnClickListener(view -> startChooseShapeActivity());
+        undoButton.setOnClickListener(view -> {
+            if (undoStack.size() > 0) {
+                if (redoStack.size() == undoRedoMaxSize) {
+                    redoStack.remove(redoStack.size() - 1);
+                }
+                redoStack.add(0,undoStack.get(0));
+                undoStack.remove(0);
+                drawCommandsLog.remove(drawCommandsLog.size() - 1);
+                makeCanvas();
+                for (int i = 0; i < drawCommandsLog.size(); i++) {
+                    deserializeDraw(drawCommandsLog.get(i));
+                    drawShape(xCoordinate, yCoordinate, shapeName, shapeText);
                 }
             }
         });
-        redoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (redoStack.size() > 0) {
-                    if (undoStack.size() == undoRedoMaxSize) {
-                        undoStack.remove(undoStack.size() - 1);
-                    }
-                    undoStack.add(redoStack.get(0));
-                    drawCommandsLog.add(redoStack.get(0));
-                    redoStack.remove(0);
-                    makeCanvas();
-                    for (int i = 0; i < drawCommandsLog.size(); i++) {
-                        deserializeDraw(drawCommandsLog.get(i));
-                        drawShape(xCoordinate, yCoordinate, shapeName, shapeText);
-                    }
+        redoButton.setOnClickListener(view -> {
+            if (redoStack.size() > 0) {
+                if (undoStack.size() == undoRedoMaxSize) {
+                    undoStack.remove(undoStack.size() - 1);
+                }
+                undoStack.add(redoStack.get(0));
+                drawCommandsLog.add(redoStack.get(0));
+                redoStack.remove(0);
+                makeCanvas();
+                for (int i = 0; i < drawCommandsLog.size(); i++) {
+                    deserializeDraw(drawCommandsLog.get(i));
+                    drawShape(xCoordinate, yCoordinate, shapeName, shapeText);
                 }
             }
         });
@@ -246,6 +229,18 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         }
         if(shapeName.equals("triangle")){
             drawTriangle(x,y,textToDraw);
+        }
+        if(shapeName.equals("arrowLeft")){
+            drawArrow(x,y, "left");
+        }
+        if(shapeName.equals("arrowRight")){
+            drawArrow(x,y, "right");
+        }
+        if(shapeName.equals("arrowUp")){
+            drawArrow(x,y, "up");
+        }
+        if(shapeName.equals("arrowDown")){
+            drawArrow(x,y, "down");
         }
     }
 
@@ -395,8 +390,59 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         v.invalidate();
     }
 
+    public void drawArrow(int x, int y, String direction){
+        //Draw arrow
+        Rect r = new Rect(x-100, y+100, x+100, y-100);
+        int width = r.width();
+        int height = r.height();
+        Path path = new Path();
+        if (direction.equals("down")) {
+            path.moveTo(x, y - height/2); // Center Top
+            path.lineTo(x + width/2, y); // Center Right
+            path.lineTo(x + width/4, y); // Center Inner Right
+            path.lineTo(x + width/4, y + height/2); // Bottom Inner Right
+            path.lineTo(x - width/4, y + height/2); // Bottom Inner Left
+            path.lineTo(x - width/4, y); // Center Inner Left
+            path.lineTo(x - width/2, y); // Center Left
+            path.lineTo(x, y - height/2); // Center Top
+        } else if (direction.equals("up")) {
+            path.moveTo(x, y + height/2); // Center Bottom
+            path.lineTo(x + width/2, y); // Center Right
+            path.lineTo(x + width/4, y); // Center Inner Right
+            path.lineTo(x + width/4, y - height/2); // Top Inner Right
+            path.lineTo(x - width/4, y - height/2); // Top Inner Left
+            path.lineTo(x - width/4, y); // Center Inner Left
+            path.lineTo(x - width/2, y); // Center Left
+            path.lineTo(x, y + height/2); // Center Bottom
+        } else if (direction.equals("right")) {
+            path.moveTo(x + width/2, y); // Center Right
+            path.lineTo(x, y - height/2); // Bottom Center
+            path.lineTo(x, y - height/4); // Inner Bottom Center
+            path.lineTo(x - width/2, y - height/4); // Inner Bottom Left
+            path.lineTo(x - width/2, y + height/4); // Inner Top Left
+            path.lineTo(x, y + height/4); // Inner Top Center
+            path.lineTo(x, y + height/2); // Top Center
+            path.lineTo(x + width/2, y); // Center Right
+        } else if (direction.equals("left")) {
+            path.moveTo(x - width/2, y); // Center Left
+            path.lineTo(x, y - height/2); // Bottom Center
+            path.lineTo(x, y - height/4); // Inner Bottom Center
+            path.lineTo(x + width/2, y - height/4); // Inner Bottom Right
+            path.lineTo(x + width/2, y + height/4); // Inner Top Right
+            path.lineTo(x, y + height/4); // Inner Top Center
+            path.lineTo(x, y + height/2); // Top Center
+            path.lineTo(x - width/2, y); // Center Left
+        }
+        path.close();
+        View v = this.findViewById(R.id.imageView);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+        drawingCanvas.drawPath(path, paint);
+        v.invalidate();
+    }
+
+
     public void makeCanvas(){
-        //Toast.makeText(getApplicationContext(), "Making new canvas", Toast.LENGTH_SHORT).show();
         View v = this.findViewById(R.id.imageView);
         xOffset = (int) v.getX();
         yOffset = (int) v.getY();

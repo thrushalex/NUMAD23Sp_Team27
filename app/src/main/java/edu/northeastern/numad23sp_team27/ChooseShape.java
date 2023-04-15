@@ -24,6 +24,10 @@ public class ChooseShape extends AppCompatActivity {
     private Button rectangleButton;
     private Button ovalButton;
     private Button triangleButton;
+    private Button arrowRightButton;
+    private Button arrowLeftButton;
+    private Button arrowUpButton;
+    private Button arrowDownButton;
     private static final String preferences = "projTalkPreferences";
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
@@ -46,6 +50,10 @@ public class ChooseShape extends AppCompatActivity {
         rectangleButton = findViewById(R.id.rectangleChip);
         ovalButton = findViewById(R.id.ovalChip);
         triangleButton = findViewById(R.id.triangleChip);
+        arrowRightButton = findViewById(R.id.arrowRight);
+        arrowLeftButton = findViewById(R.id.arrowLeft);
+        arrowUpButton = findViewById(R.id.arrowUp);
+        arrowDownButton = findViewById(R.id.arrowDown);
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,7 +112,40 @@ public class ChooseShape extends AppCompatActivity {
                 updateImageView();
             }
         });
+        arrowLeftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shape = "arrowLeft";
+                editor.putString("shape", "arrowLeft");
+                updateImageView();
+            }
+        });
+        arrowRightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shape = "arrowRight";
+                editor.putString("shape", "arrowRight");
+                updateImageView();
+            }
+        });
+        arrowUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shape = "arrowUp";
+                editor.putString("shape", "arrowUp");
+                updateImageView();
+            }
+        });
+        arrowDownButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shape = "arrowDown";
+                editor.putString("shape", "arrowDown");
+                updateImageView();
+            }
+        });
     }
+
 
     public void updateImageView(){
         ImageView shapeIV = findViewById(R.id.imageView2);
