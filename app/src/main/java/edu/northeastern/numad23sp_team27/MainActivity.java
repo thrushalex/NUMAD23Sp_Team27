@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.aboutBtn).setOnClickListener(this);
         findViewById(R.id.stickerBtn).setOnClickListener(this);
         findViewById(R.id.projectButton).setOnClickListener(this);
-        findViewById(R.id.drawingButton).setOnClickListener(this);
         CHANNEL_ID = "channel ID";
         createNotificationChannel();
     }
@@ -51,9 +50,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.projectButton:
                 openProjectLoginActivity();
                 break;
-            case R.id.drawingButton:
-                startDrawingActivity();
-                break;
         }
     }
 
@@ -74,11 +70,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void openProjectLoginActivity() {
         Intent intent = new Intent(this, ProjectLogin.class);
-        startActivity(intent);
-    }
-
-    public void startDrawingActivity() {
-        Intent intent = new Intent(this, DrawingActivity.class);
         startActivity(intent);
     }
 
