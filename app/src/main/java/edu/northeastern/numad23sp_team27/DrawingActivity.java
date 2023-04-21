@@ -319,8 +319,8 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
 
     public void drawOval(int x, int y, String textToDraw){
         //Draw oval
-        Rect r = new Rect(x-200, y+100, x+200, y-100);
-        RectF rectF = new RectF(x-250, y+180, x+250, y-180);
+        Rect r = new Rect(x-200, y+70, x+200, y-70);
+        RectF rectF = new RectF(x-250, y+120, x+250, y-120);
 
         View v = this.findViewById(R.id.imageView);
         paint.setStyle(Paint.Style.STROKE);
@@ -334,7 +334,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         int width = r.width();
         int start = 0;
         //Based on size of text box and font size
-        int maxRows = 3;
+        int maxRows = 2;
         int verticalOffset = 60;
         int offSetSize = 60;
         String remainingText = textToDraw;
