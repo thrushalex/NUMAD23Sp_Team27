@@ -182,6 +182,49 @@ public class ChooseShape extends AppCompatActivity {
                 shapeIV.setImageResource(R.drawable.triangle_red);
             }
         }
-
+        if (shape == "arrowUp") {
+            if (color == "black") {
+                shapeIV.setImageResource(R.drawable.up_arrow_black);
+            }
+            if (color == "blue") {
+                shapeIV.setImageResource(R.drawable.up_arrow_blue);
+            }
+            if (color == "red") {
+                shapeIV.setImageResource(R.drawable.up_arrow_red);
+            }
+        }
+        if (shape == "arrowDown") {
+            if (color == "black") {
+                shapeIV.setImageResource(R.drawable.down_arrow_black);
+            }
+            if (color == "blue") {
+                shapeIV.setImageResource(R.drawable.down_arrow_blue);
+            }
+            if (color == "red") {
+                shapeIV.setImageResource(R.drawable.down_arrow_red);
+            }
+        }
+        if (shape == "arrowLeft") {
+            if (color == "black") {
+                shapeIV.setImageResource(R.drawable.left_arrow_black);
+            }
+            if (color == "blue") {
+                shapeIV.setImageResource(R.drawable.left_arrow_blue);
+            }
+            if (color == "red") {
+                shapeIV.setImageResource(R.drawable.left_arrow_red);
+            }
+        }
+        if (shape == "arrowRight") {
+            if (color == "black") {
+                shapeIV.setImageResource(R.drawable.right_arrow_black);
+            }
+            if (color == "blue") {
+                shapeIV.setImageResource(R.drawable.right_arrow_blue);
+            }
+            if (color == "red") {
+                shapeIV.setImageResource(R.drawable.right_arrow_red);
+            }
+        }
     }
 }
