@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -318,8 +319,8 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
 
     public void drawOval(int x, int y, String textToDraw){
         //Draw oval
-        Rect r = new Rect(x-200, y+100, x+200, y-100);
-        RectF rectF = new RectF(x-250, y+180, x+250, y-180);
+        Rect r = new Rect(x-200, y+70, x+200, y-70);
+        RectF rectF = new RectF(x-250, y+120, x+250, y-120);
 
         View v = this.findViewById(R.id.imageView);
         paint.setStyle(Paint.Style.STROKE);
@@ -333,7 +334,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         int width = r.width();
         int start = 0;
         //Based on size of text box and font size
-        int maxRows = 3;
+        int maxRows = 2;
         int verticalOffset = 60;
         int offSetSize = 60;
         String remainingText = textToDraw;
@@ -353,18 +354,23 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
 
     public void drawTriangle(int x, int y, String textToDraw){
         //Draw triangle
-        Rect r = new Rect(x-200, y+100, x+200, y-100);
+        Rect r = new Rect(x-150, y+40, x+150, y-40);
         int width = r.width();
+        int height = r.height();
         Path path = new Path();
-        path.moveTo(x, y - width); // Top
-        path.lineTo(x - width, y + width/2); // Bottom left
-        path.lineTo(x + width, y + width/2); // Bottom right
-        path.lineTo(x, y - width); // Back to Top
+        path.moveTo(x, y + height*2); // Top
+        path.lineTo(x - width, y - height/2); // Bottom left
+        path.lineTo(x + width, y - height/2); // Bottom right
+        path.lineTo(x, y + height*2); // Back to Top
         path.close();
         View v = this.findViewById(R.id.imageView);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5);
         drawingCanvas.drawPath(path, paint);
+
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(5);
+        drawingCanvas.drawRect(r,paint);
 
         //Set Paint object for text
         paint.setTextSize(70);
@@ -372,7 +378,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         paint.setTextAlign(Paint.Align.CENTER);
         int start = 0;
         //Based on size of text box and font size
-        int maxRows = 3;
+        int maxRows = 1;
         int verticalOffset = 60;
         int offSetSize = 60;
         String remainingText = textToDraw;
@@ -392,7 +398,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
 
     public void drawArrow(int x, int y, String direction){
         //Draw arrow
-        Rect r = new Rect(x-100, y+100, x+100, y-100);
+        Rect r = new Rect(x-60, y+60, x+60, y-60);
         int width = r.width();
         int height = r.height();
         Path path = new Path();
@@ -451,6 +457,9 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         drawingBitmap = Bitmap.createBitmap(vWidth, vHeight, Bitmap.Config.ARGB_8888);
         drawingImageView.setImageBitmap(drawingBitmap);
         drawingCanvas = new Canvas(drawingBitmap);
+        Paint backgroundPaint = new Paint();
+        backgroundPaint.setColor(getResources().getColor(R.color.white));
+        drawingCanvas.drawPaint(backgroundPaint);
     }
 
     public void startChooseShapeActivity() {
