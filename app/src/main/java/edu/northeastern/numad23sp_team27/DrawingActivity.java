@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -392,7 +393,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
 
     public void drawArrow(int x, int y, String direction){
         //Draw arrow
-        Rect r = new Rect(x-100, y+100, x+100, y-100);
+        Rect r = new Rect(x-60, y+60, x+60, y-60);
         int width = r.width();
         int height = r.height();
         Path path = new Path();
@@ -451,6 +452,9 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         drawingBitmap = Bitmap.createBitmap(vWidth, vHeight, Bitmap.Config.ARGB_8888);
         drawingImageView.setImageBitmap(drawingBitmap);
         drawingCanvas = new Canvas(drawingBitmap);
+        Paint backgroundPaint = new Paint();
+        backgroundPaint.setColor(getResources().getColor(R.color.white));
+        drawingCanvas.drawPaint(backgroundPaint);
     }
 
     public void startChooseShapeActivity() {
