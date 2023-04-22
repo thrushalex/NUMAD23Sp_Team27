@@ -11,6 +11,7 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,11 +20,19 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Random;
 
 public class DrawingActivity extends AppCompatActivity implements View.OnTouchListener {
 
@@ -37,9 +46,9 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
     private int xOffset;
     private int yOffset;
     private ConstraintLayout constraintLayout;
-
     private GestureDetector gestureDetector;
     private Paint paint;
+    private Button saveButton;
     private Button shapeColorButton;
     private Button undoButton;
     private Button redoButton;
@@ -48,21 +57,26 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
     private String shapeText;
     private int xCoordinate;
     private int yCoordinate;
+    private int diagramID;
     private ArrayList<String> undoStack;
     private ArrayList<String> redoStack;
     private ArrayList<String> drawCommandsLog;
     private static final String preferences = "projTalkPreferences";
     private SharedPreferences sharedpreferences;
+    private SharedPreferences.Editor editor;
     private final int undoRedoMaxSize = 10;
+    private DatabaseReference db;
+    private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_drawing);
-
+        db = FirebaseDatabase.getInstance(DB_ADDRESS).getReference();
         shapeColorButton = findViewById(R.id.shapeColorSelectButton);
         undoButton = findViewById(R.id.undoButton);
         redoButton = findViewById(R.id.redoButton);
+        saveButton = findViewById(R.id.saveDrawingButton);
         drawingImageView = findViewById(R.id.imageView);
         constraintLayout = findViewById(R.id.constraintLayout);
         paint = new Paint();
@@ -76,6 +90,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         undoStack = new ArrayList<>();
         redoStack = new ArrayList<>();
         sharedpreferences = getSharedPreferences(preferences, Context.MODE_PRIVATE);
+        editor = sharedpreferences.edit();
         gestureDetector = new GestureDetector(this,new OnSwipeListener(){
 
             @Override
@@ -141,6 +156,12 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
                     drawShape(xCoordinate, yCoordinate, shapeName, shapeText);
                 }
             }
+        });
+        saveButton.setOnClickListener(view -> {
+            saveDiagram();
+            editor.putString("diagramID", Integer.toString(diagramID));
+            editor.commit();
+            finish();
         });
     }
 
@@ -460,6 +481,34 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         Paint backgroundPaint = new Paint();
         backgroundPaint.setColor(getResources().getColor(R.color.white));
         drawingCanvas.drawPaint(backgroundPaint);
+    }
+
+    public void saveDiagram(){
+            db.child("diagrams").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int maxInt = 0;
+                    if (snapshot.exists()) {
+                        for (DataSnapshot child : snapshot.getChildren()) {
+                            int currentID = Integer.parseInt(child.child("diagramID").getValue().toString());
+                            if (currentID > maxInt) {
+                                maxInt = currentID;
+                            }
+                        }
+                        diagramID = maxInt + 1;
+                        db.child("diagrams").child(Integer.toString(diagramID)).child("diagramID").setValue(diagramID);
+                        db.child("diagrams").child(Integer.toString(diagramID)).child("diagram").setValue(drawCommandsLog);
+                    } else {
+                        db.child("diagrams").child(Integer.toString(1)).child("diagramID").setValue(1);
+                        db.child("diagrams").child(Integer.toString(1)).child("diagram").setValue(drawCommandsLog);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.i("Diagram Save Error", error.getMessage());
+                }
+            });
     }
 
     public void startChooseShapeActivity() {
