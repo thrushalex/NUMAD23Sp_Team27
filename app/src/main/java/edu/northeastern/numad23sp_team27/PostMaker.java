@@ -28,8 +28,8 @@ public class PostMaker extends AppCompatActivity {
     private Button submitButton;
     private int postID;
     private int diagramID;
-    private SharedPreferences sharedpreferences;
-    private SharedPreferences.Editor editor;
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor editor;
     private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
     private static final String preferences = "projTalkPreferences";
     private DatabaseReference db;
@@ -92,6 +92,7 @@ public class PostMaker extends AppCompatActivity {
                 db.child("posttest").child(Integer.toString(postID)).child("title").setValue(postTitle);
                 db.child("posttest").child(Integer.toString(postID)).child("body").setValue(postBody);
                 db.child("posttest").child(Integer.toString(postID)).child("diagramID").setValue(diagramID);
+                db.child("posttest").child(Integer.toString(postID)).child("dateTime").setValue(java.time.Clock.systemUTC().instant().toString());
             }
 
             @Override

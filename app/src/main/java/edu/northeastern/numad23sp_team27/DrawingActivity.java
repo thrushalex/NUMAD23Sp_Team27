@@ -62,8 +62,8 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
     private ArrayList<String> redoStack;
     private ArrayList<String> drawCommandsLog;
     private static final String preferences = "projTalkPreferences";
-    private SharedPreferences sharedpreferences;
-    private SharedPreferences.Editor editor;
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor editor;
     private final int undoRedoMaxSize = 10;
     private DatabaseReference db;
     private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
@@ -159,8 +159,6 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         });
         saveButton.setOnClickListener(view -> {
             saveDiagram();
-            editor.putString("diagramID", Integer.toString(diagramID));
-            editor.apply();
             finish();
         });
     }
@@ -488,20 +486,21 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     int maxInt = 0;
+                    diagramID = 0;
                     if (snapshot.exists()) {
                         for (DataSnapshot child : snapshot.getChildren()) {
                             int currentID = Integer.parseInt(child.child("diagramID").getValue().toString());
                             if (currentID > maxInt) {
                                 maxInt = currentID;
+                                diagramID = maxInt + 1;
                             }
                         }
-                        diagramID = maxInt + 1;
+                    }
+                    if (diagramID != 0) {
+                        editor.putString("diagramID", Integer.toString(diagramID));
+                        editor.commit();
                         db.child("diagrams").child(Integer.toString(diagramID)).child("diagramID").setValue(diagramID);
                         db.child("diagrams").child(Integer.toString(diagramID)).child("diagram").setValue(drawCommandsLog);
-                    } else {
-                        diagramID = 1;
-                        db.child("diagrams").child(Integer.toString(1)).child("diagramID").setValue(1);
-                        db.child("diagrams").child(Integer.toString(1)).child("diagram").setValue(drawCommandsLog);
                     }
                 }
 
