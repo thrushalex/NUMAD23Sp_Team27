@@ -160,7 +160,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
         saveButton.setOnClickListener(view -> {
             saveDiagram();
             editor.putString("diagramID", Integer.toString(diagramID));
-            editor.commit();
+            editor.apply();
             finish();
         });
     }
@@ -499,6 +499,7 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
                         db.child("diagrams").child(Integer.toString(diagramID)).child("diagramID").setValue(diagramID);
                         db.child("diagrams").child(Integer.toString(diagramID)).child("diagram").setValue(drawCommandsLog);
                     } else {
+                        diagramID = 1;
                         db.child("diagrams").child(Integer.toString(1)).child("diagramID").setValue(1);
                         db.child("diagrams").child(Integer.toString(1)).child("diagram").setValue(drawCommandsLog);
                     }
