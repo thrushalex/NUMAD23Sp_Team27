@@ -54,6 +54,8 @@ public class PostMaker extends AppCompatActivity {
             savePost();
             finish();
         });
+        editor.putString("diagramID", "0");
+        editor.commit();
     }
 
     public void startDrawingActivity() {
