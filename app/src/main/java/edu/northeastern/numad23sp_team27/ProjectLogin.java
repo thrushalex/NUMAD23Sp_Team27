@@ -1,6 +1,8 @@
 package edu.northeastern.numad23sp_team27;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -23,11 +25,16 @@ public class ProjectLogin extends AppCompatActivity {
 
     private String email;
     private String password;
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor editor;
+    private static final String preferences = "projTalkPreferences";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_login);
+        sharedpreferences = getSharedPreferences(preferences, Context.MODE_PRIVATE);
+        editor = sharedpreferences.edit();
         db = FirebaseDatabase.getInstance(DB_ADDRESS).getReference();
         auth = FirebaseAuth.getInstance();
         Button loginUserButton = findViewById(R.id.loginButton);
@@ -82,6 +89,8 @@ public class ProjectLogin extends AppCompatActivity {
                 user = task.getResult().getUser();
                 if (!(user == null)) {
                     Toast.makeText(getApplicationContext(), "user creation successful", Toast.LENGTH_SHORT).show();
+                    editor.putString("userEmail", email);
+                    editor.commit();
                     goToUserDashboard();
                 }
             } else {
@@ -96,6 +105,8 @@ public class ProjectLogin extends AppCompatActivity {
                 user = task.getResult().getUser();
                 if (!(user == null)) {
                     Toast.makeText(getApplicationContext(), "login successful", Toast.LENGTH_SHORT).show();
+                    editor.putString("userEmail", email);
+                    editor.commit();
                     goToUserDashboard();
                 }
             } else {

@@ -48,10 +48,11 @@ public class PostMaker extends AppCompatActivity {
         addDiagramButton.setOnClickListener(view -> {
             startDrawingActivity();
         });
+        diagramID = 0;
         submitButton.setOnClickListener(view -> {
             getPostData();
             savePost();
-            //finish();
+            finish();
         });
     }
 
@@ -88,7 +89,7 @@ public class PostMaker extends AppCompatActivity {
                 }
                 postID = maxInt + 1;
                 db.child("posttest").child(Integer.toString(postID)).child("postID").setValue(postID);
-                db.child("posttest").child(Integer.toString(postID)).child("author").setValue("email goes here");
+                db.child("posttest").child(Integer.toString(postID)).child("author").setValue(sharedpreferences.getString("userEmail", "DEFAULT"));
                 db.child("posttest").child(Integer.toString(postID)).child("title").setValue(postTitle);
                 db.child("posttest").child(Integer.toString(postID)).child("body").setValue(postBody);
                 db.child("posttest").child(Integer.toString(postID)).child("diagramID").setValue(diagramID);
