@@ -77,7 +77,7 @@ public class PostMaker extends AppCompatActivity {
     }
 
     public void savePost() {
-        db.child("posttest").addListenerForSingleValueEvent(new ValueEventListener() {
+        db.child("posts").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 int maxInt = 0;
@@ -90,12 +90,12 @@ public class PostMaker extends AppCompatActivity {
                     }
                 }
                 postID = maxInt + 1;
-                db.child("posttest").child(Integer.toString(postID)).child("postID").setValue(postID);
-                db.child("posttest").child(Integer.toString(postID)).child("author").setValue(sharedpreferences.getString("userEmail", "DEFAULT"));
-                db.child("posttest").child(Integer.toString(postID)).child("title").setValue(postTitle);
-                db.child("posttest").child(Integer.toString(postID)).child("body").setValue(postBody);
-                db.child("posttest").child(Integer.toString(postID)).child("diagramID").setValue(diagramID);
-                db.child("posttest").child(Integer.toString(postID)).child("dateTime").setValue(java.time.Clock.systemUTC().instant().toString());
+                db.child("posts").child(Integer.toString(postID)).child("postID").setValue(postID);
+                db.child("posts").child(Integer.toString(postID)).child("author").setValue(sharedpreferences.getString("userEmail", "DEFAULT"));
+                db.child("posts").child(Integer.toString(postID)).child("title").setValue(postTitle);
+                db.child("posts").child(Integer.toString(postID)).child("body").setValue(postBody);
+                db.child("posts").child(Integer.toString(postID)).child("diagramID").setValue(diagramID);
+                db.child("posts").child(Integer.toString(postID)).child("dateTime").setValue(java.time.Clock.systemUTC().instant().toString());
             }
 
             @Override
