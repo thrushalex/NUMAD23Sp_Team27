@@ -17,8 +17,6 @@
             android:layout_alignParentTop="true"
             android:text="Place Holder"
             android:textAppearance="?android:textAppearanceMedium"/>
-
-
     </RelativeLayout>
 
 </ScrollView>
