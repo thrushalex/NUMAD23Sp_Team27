@@ -106,8 +106,11 @@ public class CommentActivity extends AppCompatActivity {
                     for (DataSnapshot child : snapshot.getChildren()) {
                         drawingCommands.add(child.getValue().toString());
                     }
-                    //Commented out as this is currently getting a null object reference
-                    //draw(drawingCommands);
+                    Canvas canvas = new Canvas(findViewById(R.id.post_imageview));
+                    for (String ds: drawingCommands) {
+                        String[] d = ds.split(",");
+                        canvas.drawShape(Integer.parseInt(d[0]), Integer.parseInt(d[1]), d[2], d[3]);
+                    }
                 }
 
             }
