@@ -104,18 +104,9 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
                         tempPost.setPostBody(child.child("body").getValue().toString());
                         tempPost.setPostAuthor(child.child("author").getValue().toString());
                         tempPost.setPostDatetime(child.child("dateTime").getValue().toString());
-                        ArrayList<String> diagramsDetails = new ArrayList<>();
-                        String did = child.child("diagramID").getValue().toString();
-                        Log.i("forums diagram id", did);
-                        if (!did.equals("0")) {
-                            String diagramStr = sharedpreferences.getString(did, "default");
-                            Log.i("diagram string", diagramStr);
-                            for (String ds : diagramStr.split("|"))
-                                diagramsDetails.add(ds);
-                            for (String s : diagramsDetails)
-                                Log.i("diagram", s);
-                            tempPost.setPostDiagram(diagramsDetails);
-                        }
+                        ArrayList<String> diagramsDetails;
+                        diagramsDetails = getDiagram(Integer.parseInt(child.child("diagramID").getValue().toString()));
+                        tempPost.setPostDiagram(diagramsDetails);
                         if (postIDs.size() <= 10) {
                             listLink.add(0, tempPost);
                         } else {
@@ -132,6 +123,28 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
                 Log.i("Post Retrieval Error", error.getMessage());
             }
         });
+    }
+
+    //Produce arraylist of string to enable drawing of diagram, based on given diagramID
+    public ArrayList<String> getDiagram(int diagramID) {
+        ArrayList<String> diagramArrayList;
+        diagramArrayList = new ArrayList<String>();
+        db.child("diagrams").child(Integer.toString(diagramID)).child("diagram").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        diagramArrayList.add(child.getValue().toString());
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("Post Retrieval Error", error.getMessage());
+            }
+        });
+        return diagramArrayList;
     }
 
 
