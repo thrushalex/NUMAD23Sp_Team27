@@ -2,6 +2,7 @@ package edu.northeastern.numad23sp_team27;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +66,9 @@ public class ForumsAdapter extends ArrayAdapter<Post> {
             public void onClick(View v) {
                 // Create an Intent to start the new Activity
                 Intent intent = new Intent(getContext(), CommentActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("postId",post.getPostId());
+                intent.putExtras(bundle);
                 // Start the new Activity
                 getContext().startActivity(intent);
             }
