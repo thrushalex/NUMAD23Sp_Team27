@@ -10,12 +10,13 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ForumsAdapter extends ArrayAdapter<Post> {
-
+    Context context;
     private static class ViewHolder {
-        //ImageView image;
+        ImageView image;
         TextView author;
         TextView title;
         TextView date;
@@ -23,6 +24,7 @@ public class ForumsAdapter extends ArrayAdapter<Post> {
 
     public ForumsAdapter(Context context, int resource, ArrayList<Post> posts) {
         super(context, resource, posts);
+        this.context = context;
     }
 
     @Override
@@ -37,17 +39,28 @@ public class ForumsAdapter extends ArrayAdapter<Post> {
             viewHolder.author = (TextView) convertView.findViewById(R.id.author_text_view);
             viewHolder.date = (TextView) convertView.findViewById(R.id.date_text_view);
             viewHolder.title = (TextView) convertView.findViewById(R.id.title_text_view);
-            //viewHolder.image = (ImageView) convertView.findViewById(R.id.post_image_view);
+            viewHolder.image = (ImageView) convertView.findViewById(R.id.post_image_view);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
         }
+
         // populate data
         viewHolder.author.setText(post.getPostAuthor());
         viewHolder.date.setText(post.getPostDatetime());
         viewHolder.title.setText(post.getPostTitle());
-        //viewHolder.image.setImageResource();
+        ArrayList<String> details = post.getPostDiagram();
+        if (details != null) {
+            Canvas canvas = new Canvas(viewHolder.image);
+            for (String ds: details) {
+                String[] d = ds.split(",");
+                canvas.drawShape(Integer.parseInt(d[0]), Integer.parseInt(d[1]), d[2], d[3]);
+            }
+        }
+
         // Return the completed view to render on screen
         return convertView;
     }
+
+
 }

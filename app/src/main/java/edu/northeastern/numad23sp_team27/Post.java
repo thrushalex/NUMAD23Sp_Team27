@@ -1,11 +1,13 @@
 package edu.northeastern.numad23sp_team27;
 
+import java.util.ArrayList;
+
 public class Post {
     String postAuthor;
     String postId;
     String postTitle;
     String postBody;
-    String postDiagram;
+    ArrayList<String> postDiagram;
     String postDatetime;
     public String getPostId() {
         return postId;
@@ -31,11 +33,11 @@ public class Post {
         this.postBody = postBody;
     }
 
-    public String getPostDiagram() {
+    public ArrayList<String> getPostDiagram() {
         return postDiagram;
     }
 
-    public void setPostDiagram(String postDiagram) {
+    public void setPostDiagram(ArrayList<String> postDiagram) {
         this.postDiagram = postDiagram;
     }
 
@@ -47,7 +49,7 @@ public class Post {
 
     public String getPostAuthor() { return this.postAuthor;}
 
-    public Post(String postTitle, String postAuthor, String postBody, String postDiagram, String postDatetime) {
+    public Post(String postTitle, String postAuthor, String postBody, ArrayList<String> postDiagram, String postDatetime) {
         this.postId = null;
         this.postAuthor = postAuthor;
         this.postTitle = postTitle;
@@ -61,7 +63,7 @@ public class Post {
         this.postId = null;
         this.postTitle = null;
         this.postBody = null;
-        this.postDiagram = null;
+        this.postDiagram = new ArrayList<>();
         this.postDatetime = null;
     }
 }

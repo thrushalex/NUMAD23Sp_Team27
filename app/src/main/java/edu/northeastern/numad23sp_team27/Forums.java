@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,7 +24,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Forums extends AppCompatActivity implements View.OnClickListener{
@@ -36,6 +39,7 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
     private ArrayList<Integer> postIDs;
     private ForumsAdapter forumsAdapter;
     private ListView forumListView;
+    private Canvas canvas;
     private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
     private static final String preferences = "projTalkPreferences";
     private DatabaseReference db;
@@ -93,14 +97,25 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     for (DataSnapshot child : snapshot.getChildren()) {
-                        int currentID = Integer.parseInt(child.child("postID").getValue().toString());
                         Post tempPost = new Post();
+                        int currentID = Integer.parseInt(child.child("postID").getValue().toString());
                         tempPost.setPostId(String.valueOf(currentID));
                         tempPost.setPostTitle(child.child("title").getValue().toString());
                         tempPost.setPostBody(child.child("body").getValue().toString());
                         tempPost.setPostAuthor(child.child("author").getValue().toString());
                         tempPost.setPostDatetime(child.child("dateTime").getValue().toString());
-                        tempPost.setPostDiagram(child.child("diagramID").getValue().toString());
+                        ArrayList<String> diagramsDetails = new ArrayList<>();
+                        String did = child.child("diagramID").getValue().toString();
+                        Log.i("forums diagram id", did);
+                        if (!did.equals("0")) {
+                            String diagramStr = sharedpreferences.getString(did, "default");
+                            Log.i("diagram string", diagramStr);
+                            for (String ds : diagramStr.split("|"))
+                                diagramsDetails.add(ds);
+                            for (String s : diagramsDetails)
+                                Log.i("diagram", s);
+                            tempPost.setPostDiagram(diagramsDetails);
+                        }
                         if (postIDs.size() <= 10) {
                             listLink.add(0, tempPost);
                         } else {
@@ -119,9 +134,6 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
         });
     }
 
-    public void displayPost(List<Post>postList) {
-
-    }
 
     public void toastRecentPostsIDs(){
         for (int i = 0; i < listLink.size(); ++i) {

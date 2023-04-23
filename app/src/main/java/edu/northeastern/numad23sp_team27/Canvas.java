@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -14,17 +15,43 @@ public class Canvas {
     Bitmap drawingBitmap;
     ImageView drawingImageView;
     Paint paint;
-    View v;
-
-    Canvas(View v){
-        int vWidth = v.getWidth();
-        int vHeight = v.getHeight();
-        drawingBitmap = Bitmap.createBitmap(vWidth, vHeight, Bitmap.Config.ARGB_8888);
+    Drawable drawable;
+    Canvas(ImageView v){
+        //int vWidth = v.getWidth();
+        //int vHeight = v.getHeight();
+        drawable = v.getDrawable();
+        drawingBitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        drawingImageView = v;
         drawingImageView.setImageBitmap(drawingBitmap);
         drawingCanvas = new android.graphics.Canvas(drawingBitmap);
+        paint = new Paint();
         Paint backgroundPaint = new Paint();
         backgroundPaint.setColor(Color.WHITE);
         drawingCanvas.drawPaint(backgroundPaint);
+    }
+
+    public void drawShape(int x, int y, String shapeName, String textToDraw){
+        if(shapeName.equals("rectangle")){
+            drawRectangle(x,y,textToDraw);
+        }
+        if(shapeName.equals("oval")){
+            drawOval(x,y,textToDraw);
+        }
+        if(shapeName.equals("triangle")){
+            drawTriangle(x,y,textToDraw);
+        }
+        if(shapeName.equals("arrowLeft")){
+            drawArrow(x,y, "left");
+        }
+        if(shapeName.equals("arrowRight")){
+            drawArrow(x,y, "right");
+        }
+        if(shapeName.equals("arrowUp")){
+            drawArrow(x,y, "up");
+        }
+        if(shapeName.equals("arrowDown")){
+            drawArrow(x,y, "down");
+        }
     }
 
     public void drawRectangle(int x, int y, String textToDraw){
@@ -56,7 +83,7 @@ public class Canvas {
                 break;
             }
         }
-        v.invalidate();
+        drawingImageView.invalidate();
     }
 
     public void drawOval(int x, int y, String textToDraw){
@@ -90,7 +117,7 @@ public class Canvas {
                 break;
             }
         }
-        v.invalidate();
+        drawingImageView.invalidate();
     }
 
     public void drawTriangle(int x, int y, String textToDraw){
@@ -133,7 +160,7 @@ public class Canvas {
                 break;
             }
         }
-        v.invalidate();
+        drawingImageView.invalidate();
     }
 
     public void drawArrow(int x, int y, String direction){
@@ -183,7 +210,7 @@ public class Canvas {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(5);
         drawingCanvas.drawPath(path, paint);
-        v.invalidate();
+        drawingImageView.invalidate();
     }
 
 }

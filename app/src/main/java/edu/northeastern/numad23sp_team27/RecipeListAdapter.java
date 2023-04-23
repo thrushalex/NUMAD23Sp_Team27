@@ -88,7 +88,6 @@ public class RecipeListAdapter extends BaseExpandableListAdapter {
         final TextView recipeInner = (TextView) convertView.findViewById(R.id.result_row_child_text);
         recipeInner.setText(recipeResultRowChild.getRecipeResultRowText().trim());
 
-
         return convertView;
 
     }
