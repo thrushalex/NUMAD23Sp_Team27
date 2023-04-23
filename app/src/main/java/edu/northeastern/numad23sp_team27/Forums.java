@@ -11,7 +11,9 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -29,10 +31,11 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
     private RecyclerView recyclerView;
     private RecyclerAdapter adapter;
 
-    private List<Post> listLink;
+    private ArrayList<Post> listLink;
     private Button showPost;
     private ArrayList<Integer> postIDs;
-
+    private ForumsAdapter forumsAdapter;
+    private ListView forumListView;
     private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
     private static final String preferences = "projTalkPreferences";
     private DatabaseReference db;
@@ -56,12 +59,16 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
         makePostButton.setOnClickListener(this);
 
         listLink = new ArrayList<>();
-        showPost = findViewById(R.id.button);
+        showPost = findViewById(R.id.refresh_button);
         postIDs = new ArrayList<>();
         showPost.setOnClickListener(view -> {
             getMostRecentPosts();
             toastRecentPostsIDs();
         });
+
+        forumsAdapter = new ForumsAdapter(this, R.layout.activity_forums, listLink);
+        forumListView = findViewById(R.id.forum_list_view);
+        forumListView.setAdapter(forumsAdapter);
     }
 
     @Override
@@ -90,7 +97,10 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
                         Post tempPost = new Post();
                         tempPost.setPostId(String.valueOf(currentID));
                         tempPost.setPostTitle(child.child("title").getValue().toString());
-                        tempPost.setPostTitle(child.child("body").getValue().toString());
+                        tempPost.setPostBody(child.child("body").getValue().toString());
+                        tempPost.setPostAuthor(child.child("author").getValue().toString());
+                        tempPost.setPostDatetime(child.child("dateTime").getValue().toString());
+                        tempPost.setPostDiagram(child.child("diagramID").getValue().toString());
                         if (postIDs.size() <= 10) {
                             listLink.add(0, tempPost);
                         } else {
@@ -99,6 +109,7 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
                         }
                     }
                 }
+                forumsAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -106,6 +117,10 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
                 Log.i("Post Retrieval Error", error.getMessage());
             }
         });
+    }
+
+    public void displayPost(List<Post>postList) {
+
     }
 
     public void toastRecentPostsIDs(){
