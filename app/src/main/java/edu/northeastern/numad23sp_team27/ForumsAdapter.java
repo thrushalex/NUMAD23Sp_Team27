@@ -60,20 +60,6 @@ public class ForumsAdapter extends ArrayAdapter<Post> {
             }
         }
 
-        // Set an OnClickListener on the view
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create an Intent to start the new Activity
-                Intent intent = new Intent(getContext(), CommentActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("postId",post.getPostId());
-                intent.putExtras(bundle);
-                // Start the new Activity
-                getContext().startActivity(intent);
-            }
-        });
-
         // Return the completed view to render on screen
         return convertView;
     }
