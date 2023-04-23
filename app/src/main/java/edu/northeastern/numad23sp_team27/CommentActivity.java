@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
@@ -49,10 +51,15 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
     String postBody;
     String postDatetime;
     String postAuthor;
+    String bodyStr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
+
+        db = FirebaseDatabase.getInstance(DB_ADDRESS).getReference();
+        sharedpreferences = getSharedPreferences(preferences, Context.MODE_PRIVATE);
+
         Intent intent = getIntent();
         String postId;
         if(intent.hasExtra("postId")){
@@ -120,10 +127,12 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
         AlertDialog.Builder alertDialogBuild = new AlertDialog.Builder(this);
         alertDialogBuild.setTitle("Comment");
         alertDialogBuild.setMessage("Type your comment to a post");
+        commentBodyEditText = new EditText(this);
         commentBodyEditText.setInputType(InputType.TYPE_CLASS_TEXT);
         alertDialogBuild.setView(commentBodyEditText);
 
         alertDialogBuild.setPositiveButton("Ok", ((dialogInterface, i) -> {
+            bodyStr = commentBodyEditText.getText().toString();
             db.child("comments").addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -140,7 +149,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
 
                     db.child("comments").child(Integer.toString(commentIdInt)).child("postID").setValue(postIdInt);
                     db.child("comments").child(Integer.toString(commentIdInt)).child("author").setValue(sharedpreferences.getString("userEmail", "DEFAULT"));
-                    db.child("comments").child(Integer.toString(commentIdInt)).child("body").setValue(commentBodyEditText.getText());
+                    db.child("comments").child(Integer.toString(commentIdInt)).child("body").setValue(bodyStr);
                     db.child("comments").child(Integer.toString(commentIdInt)).child("dateTime").setValue(java.time.Clock.systemUTC().instant().toString());
                 }
 
@@ -152,6 +161,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
         }));
         alertDialogBuild.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
         dialog = alertDialogBuild.create();
+        dialog.show();
     }
 
 
