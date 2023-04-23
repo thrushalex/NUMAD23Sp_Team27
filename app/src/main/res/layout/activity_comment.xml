@@ -25,8 +25,8 @@
         android:id="@+id/comment_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Leave a comment"
-        android:onClick="leaveComment" />
+        android:text="Leave a comment"/>
+      <!--  android:onClick="leaveComment" /> -->
 
     <ListView
         android:id="@+id/comments_listview"
