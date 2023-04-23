@@ -1,6 +1,7 @@
 package edu.northeastern.numad23sp_team27;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,17 @@ public class ForumsAdapter extends ArrayAdapter<Post> {
                 canvas.drawShape(Integer.parseInt(d[0]), Integer.parseInt(d[1]), d[2], d[3]);
             }
         }
+
+        // Set an OnClickListener on the view
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an Intent to start the new Activity
+                Intent intent = new Intent(getContext(), CommentActivity.class);
+                // Start the new Activity
+                getContext().startActivity(intent);
+            }
+        });
 
         // Return the completed view to render on screen
         return convertView;
