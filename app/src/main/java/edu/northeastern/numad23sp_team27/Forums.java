@@ -2,6 +2,7 @@ package edu.northeastern.numad23sp_team27;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -26,16 +27,18 @@ import java.util.List;
 
 public class Forums extends AppCompatActivity implements View.OnClickListener{
 
-    private RecyclerView recyclerView;
-    private RecyclerAdapter adapter;
-
-    private List<Post> listLink;
-    private Button showPost;
-    private ArrayList<Integer> postIDs;
-
     private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
     private static final String preferences = "projTalkPreferences";
     private DatabaseReference db;
+
+    private RecyclerView recyclerView;
+    private RecyclerAdapter adapter;
+
+    private List<Post> listPost = new ArrayList<>();
+    private Button showPost;
+    private ArrayList<Integer> postIDs;
+
+    private FloatingActionButton floatingActionAddItem;
 
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
@@ -52,16 +55,17 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
 
         //Floating action button
-        FloatingActionButton makePostButton = findViewById(R.id.floatingActionButton2);
-        makePostButton.setOnClickListener(this);
+        floatingActionAddItem = findViewById(R.id.floatingActionButton2);
+        floatingActionAddItem.setOnClickListener(this);
 
-        listLink = new ArrayList<>();
-        showPost = findViewById(R.id.button);
-        postIDs = new ArrayList<>();
-        showPost.setOnClickListener(view -> {
-            getMostRecentPosts();
-            toastRecentPostsIDs();
-        });
+        //RecyclerView
+        recyclerView = findViewById(R.id.recyclerViewForums);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new RecyclerAdapter(listPost);
+        recyclerView.setAdapter(adapter);
+
+        getMostRecentPosts();
     }
 
     @Override
@@ -91,13 +95,16 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
                         tempPost.setPostId(String.valueOf(currentID));
                         tempPost.setPostTitle(child.child("title").getValue().toString());
                         tempPost.setPostTitle(child.child("body").getValue().toString());
-                        if (postIDs.size() <= 10) {
-                            listLink.add(0, tempPost);
-                        } else {
-                            listLink.remove(postIDs.size() - 1);
-                            listLink.add(0, tempPost);
-                        }
+                        //if (postIDs.size() <= 10) {
+                        //    listPost.add(0, tempPost);
+                        //} else {
+                        //    listPost.remove(postIDs.size() - 1);
+                        //    listPost.add(0, tempPost);
+                        //}
+                        listPost.add(tempPost);
+
                     }
+                    adapter.notifyDataSetChanged();
                 }
             }
 
@@ -108,11 +115,14 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
         });
     }
 
+    /*
     public void toastRecentPostsIDs(){
-        for (int i = 0; i < listLink.size(); ++i) {
-            Toast.makeText(getApplicationContext(), "Post ID is:" + listLink.get(i).postId, Toast.LENGTH_SHORT).show();
+        for (int i = 0; i < listPost.size(); ++i) {
+            Toast.makeText(getApplicationContext(), "Post ID is:" + listPost.get(i).postId, Toast.LENGTH_SHORT).show();
         }
     }
+
+     */
 
     public void startPostMakerActivity() {
         Intent intent = new Intent(this, PostMaker.class);

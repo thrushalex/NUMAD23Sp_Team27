@@ -14,7 +14,7 @@ import java.util.List;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.PostViewHolder>{
     private List<Post> listPost;
 
-    public RecyclerAdapter(List<Post> listLink) {
+    public RecyclerAdapter(List<Post> listPost) {
         this.listPost = listPost;
     }
 
@@ -33,7 +33,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.PostVi
 
     @Override
     public int getItemCount() {
-        return listPost.size();
+        if(listPost == null){
+            return 0;
+        } else {
+            return listPost.size();
+        }
     }
 
     protected class PostViewHolder extends RecyclerView.ViewHolder {
