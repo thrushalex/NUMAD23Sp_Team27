@@ -53,7 +53,6 @@ public class SendStickerActivity extends AppCompatActivity {
                     setDisplayedSticker(stickerID);
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.i("Registration Error", error.getMessage());
