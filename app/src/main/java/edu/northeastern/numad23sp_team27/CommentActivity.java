@@ -2,6 +2,8 @@ package edu.northeastern.numad23sp_team27;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -26,6 +28,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CommentActivity extends AppCompatActivity implements View.OnClickListener{
 
 
@@ -40,11 +45,16 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
 
     private AlertDialog dialog;
 
+    private List<Comment> commentList;
+
     //Database
     private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
     private static final String preferences = "projTalkPreferences";
     private DatabaseReference db;
 
+    private CommentRecyclerAdapter commentAdapter;
+
+    RecyclerView commentRv;
     SharedPreferences sharedpreferences;
     String postID;
     String postTitle;
@@ -57,6 +67,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
 
+        commentList = new ArrayList<>();
         db = FirebaseDatabase.getInstance(DB_ADDRESS).getReference();
         sharedpreferences = getSharedPreferences(preferences, Context.MODE_PRIVATE);
 
@@ -105,6 +116,11 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
         postDateText.setText(postDatetime);
         postAuthorText.setText(postAuthor);
         postBodyText.setText(postBody);
+
+        commentRv = findViewById(R.id.comments_recyclerview);
+        commentAdapter = new CommentRecyclerAdapter(this, commentList);
+        commentRv.setAdapter(commentAdapter);
+        commentRv.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -120,6 +136,35 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
     }
+
+//    public void getRecentComment() {
+//        db.child("comments").addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                int maxInt = 0;
+//                if (snapshot.exists()) {
+//                    for (DataSnapshot child : snapshot.getChildren()) {
+//                        int currentID = Integer.parseInt(child.child("commentID").getValue().toString());
+//                        if (currentID > maxInt) {
+//                            maxInt = currentID;
+//                        }
+//                    }
+//                }
+//                postID = maxInt + 1;
+//                db.child("posts").child(Integer.toString(postID)).child("postID").setValue(postID);
+//                db.child("posts").child(Integer.toString(postID)).child("author").setValue(sharedpreferences.getString("userEmail", "DEFAULT"));
+//                db.child("posts").child(Integer.toString(postID)).child("title").setValue(postTitle);
+//                db.child("posts").child(Integer.toString(postID)).child("body").setValue(postBody);
+//                db.child("posts").child(Integer.toString(postID)).child("diagramID").setValue(diagramID);
+//                db.child("posts").child(Integer.toString(postID)).child("dateTime").setValue(java.time.Clock.systemUTC().instant().toString());
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Log.i("Diagram Save Error", error.getMessage());
+//            }
+//        });
+//    }
 
     public void saveCommentMethod(){
         //LayoutInflater layoutInflater = LayoutInflater.from(this);
@@ -139,18 +184,21 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                     int maxInt = 0;
                     if (snapshot.exists()) {
                         for (DataSnapshot child : snapshot.getChildren()) {
-                            int currentID = Integer.parseInt(child.child("commentId").getValue().toString());
+                            int currentID = Integer.parseInt(child.child("commentID").getValue().toString());
                             if (currentID > maxInt) {
                                 maxInt = currentID;
                             }
                         }
                     }
                     commentIdInt = maxInt + 1;
-
-                    db.child("comments").child(Integer.toString(commentIdInt)).child("postID").setValue(postIdInt);
-                    db.child("comments").child(Integer.toString(commentIdInt)).child("author").setValue(sharedpreferences.getString("userEmail", "DEFAULT"));
-                    db.child("comments").child(Integer.toString(commentIdInt)).child("body").setValue(bodyStr);
-                    db.child("comments").child(Integer.toString(commentIdInt)).child("dateTime").setValue(java.time.Clock.systemUTC().instant().toString());
+                    String comment_time = java.time.Clock.systemUTC().instant().toString();
+                    String comment_author = sharedpreferences.getString("userEmail", "DEFAULT");
+                    db.child("postID").child(Integer.toString(postIdInt)).child("commentID").setValue(Integer.toString(commentIdInt));
+                    db.child("postID").child(Integer.toString(postIdInt)).child("author").setValue(comment_author);
+                    db.child("postID").child(Integer.toString(postIdInt)).child("body").setValue(bodyStr);
+                    db.child("postID").child(Integer.toString(postIdInt)).child("dateTime").setValue(comment_time);
+                    Comment new_comment = new Comment(comment_author, bodyStr, Integer.toString(commentIdInt), comment_time);
+                    commentList.add(new_comment);
                 }
 
                 @Override
@@ -158,11 +206,11 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                     Log.i("Diagram Save Error", error.getMessage());
                 }
             });
+            commentAdapter.notifyDataSetChanged();
         }));
         alertDialogBuild.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
         dialog = alertDialogBuild.create();
         dialog.show();
     }
-
 
 }
