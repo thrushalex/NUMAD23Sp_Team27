@@ -1,11 +1,12 @@
 package edu.northeastern.numad23sp_team27;
 
 public class Post {
+    String postAuthor;
     String postId;
     String postTitle;
     String postBody;
     String postDiagram;
-
+    String postDatetime;
     public String getPostId() {
         return postId;
     }
@@ -38,17 +39,29 @@ public class Post {
         this.postDiagram = postDiagram;
     }
 
-    public Post(String postTitle, String postBody, String postDiagram) {
+    public void setPostDatetime(String dt) { this.postDatetime = dt;}
+
+    public String getPostDatetime() { return this.postDatetime;}
+
+    public void setPostAuthor(String author) { this.postAuthor = author;}
+
+    public String getPostAuthor() { return this.postAuthor;}
+
+    public Post(String postTitle, String postAuthor, String postBody, String postDiagram, String postDatetime) {
         this.postId = null;
+        this.postAuthor = postAuthor;
         this.postTitle = postTitle;
         this.postBody = postBody;
         this.postDiagram = postDiagram;
+        this.postDatetime = postDatetime;
     }
 
     public Post() {
+        this.postAuthor = null;
         this.postId = null;
         this.postTitle = null;
         this.postBody = null;
         this.postDiagram = null;
+        this.postDatetime = null;
     }
 }
