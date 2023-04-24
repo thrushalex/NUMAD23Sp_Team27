@@ -2,6 +2,7 @@ package edu.northeastern.numad23sp_team27;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -11,6 +12,7 @@ import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -37,8 +39,8 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
     private ArrayList<Post> listLink;
     private Button showPost;
     private ArrayList<Integer> postIDs;
-    private ForumsAdapter forumsAdapter;
-    private ListView forumListView;
+    private ForumRecyclerAdapter forumsAdapter;
+    private RecyclerView forumListView;
     private Canvas canvas;
     private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
     private static final String preferences = "projTalkPreferences";
@@ -70,9 +72,10 @@ public class Forums extends AppCompatActivity implements View.OnClickListener{
             toastRecentPostsIDs();
         });
 
-        forumsAdapter = new ForumsAdapter(this, R.layout.activity_forums, listLink);
+        forumsAdapter = new ForumRecyclerAdapter(this, listLink);
         forumListView = findViewById(R.id.forum_list_view);
         forumListView.setAdapter(forumsAdapter);
+        forumListView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override

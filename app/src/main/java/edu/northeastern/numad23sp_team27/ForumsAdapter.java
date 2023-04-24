@@ -2,19 +2,15 @@ package edu.northeastern.numad23sp_team27;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -63,20 +59,6 @@ public class ForumsAdapter extends ArrayAdapter<Post> {
                 canvas.drawShape(Integer.parseInt(d[0]), Integer.parseInt(d[1]), d[2], d[3]);
             }
         }
-
-        // Set an OnClickListener on the view
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Create an Intent to start the new Activity
-                Intent intent = new Intent(getContext(), CommentActivity.class);
-                Toast.makeText(getContext(), "post id: " + post.getPostId(), Toast.LENGTH_SHORT).show();
-                // Pass post info
-                intent.putExtra("postID", post.getPostId());
-                // Start the new Activity
-                getContext().startActivity(intent);
-            }
-        });
 
         // Return the completed view to render on screen
         return convertView;

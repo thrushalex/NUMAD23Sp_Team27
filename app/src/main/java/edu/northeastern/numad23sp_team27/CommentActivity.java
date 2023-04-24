@@ -2,123 +2,219 @@ package edu.northeastern.numad23sp_team27;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
-import android.widget.ImageView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.EditText;
 
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.lang.reflect.Array;
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
-import java.util.Objects;
+import java.util.List;
 
-public class CommentActivity extends AppCompatActivity {
-    Canvas canvas;
-    Post post;
-    String postID;
-    String diagramID;
+public class CommentActivity extends AppCompatActivity implements View.OnClickListener{
 
-    TextView titleTextView;
-    TextView bodyTextView;
-    ImageView drawingImageView;
+
+    //commentId
+    private int commentIdInt = 1;
+
+    //commentBody
+    private EditText commentBodyEditText;
+
+    //postId
+    private int postIdInt;
+
+    private AlertDialog dialog;
+
+    private List<Comment> commentList;
+
+    //Database
     private static final String DB_ADDRESS = "https://at-your-service-4ab17-default-rtdb.firebaseio.com";
+    private static final String preferences = "projTalkPreferences";
     private DatabaseReference db;
 
+    private CommentRecyclerAdapter commentAdapter;
+
+    RecyclerView commentRv;
+    SharedPreferences sharedpreferences;
+    String postID;
+    String postTitle;
+    String postBody;
+    String postDatetime;
+    String postAuthor;
+    String bodyStr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_comment);
+
+        commentList = new ArrayList<>();
         db = FirebaseDatabase.getInstance(DB_ADDRESS).getReference();
-        post = new Post();
-        if (getIntent().getStringExtra("postID") != null) {
-            postID = getIntent().getStringExtra("postID");
-        }
-        populatePost(postID);
-        //Toast.makeText(getApplicationContext(), "Size of diagramDrawingCommands = " + diagramDrawingCommands.size(), Toast.LENGTH_SHORT).show();
-        titleTextView =findViewById(R.id.title_textview);
-        bodyTextView =findViewById(R.id.content_textview);
+        sharedpreferences = getSharedPreferences(preferences, Context.MODE_PRIVATE);
 
-    }
-
-    public void draw(ArrayList<String> diagramDrawingCommands){
-        if (!diagramDrawingCommands.isEmpty()) {
-            drawingImageView = findViewById(R.id.imageView);
-            canvas = new Canvas(drawingImageView);
-            for (String ds: diagramDrawingCommands) {
-                String[] d = ds.split(",");
-                canvas.drawShape(Integer.parseInt(d[0]), Integer.parseInt(d[1]), d[2], d[3]);
-                drawingImageView.invalidate();
+        Intent intent = getIntent();
+        String postId;
+        if(intent.hasExtra("postId")){
+            postId = intent.getStringExtra("postId");
+            try{
+                postIdInt = Integer.parseInt(postId);
+            } catch (Exception exception) {
+                finish();
             }
-        }
-    }
-
-    public void populatePost(String postID){
-        if (!Objects.equals(postID, "0")) {
-            post.setPostId(postID);
-            db.child("posts").child(postID).addListenerForSingleValueEvent(new ValueEventListener() {
-                ArrayList<String> tempArrayList;
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        for (DataSnapshot child : snapshot.getChildren()) {
-                            if (Objects.equals(child.getKey(), "body")){
-                                post.setPostBody(child.getValue().toString());
-                                bodyTextView.setText(post.getPostBody());
-                            } else if (Objects.equals(child.getKey(), "title")) {
-                                post.setPostTitle(child.getValue().toString());
-                                titleTextView.setText(post.getPostTitle());
-                            } else if (Objects.equals(child.getKey(), "author")) {
-                                post.setPostAuthor(child.getValue().toString());
-                            } else if (Objects.equals(child.getKey(), "dateTime")) {
-                                post.setPostDatetime(child.getValue().toString());
-                            } else if (Objects.equals(child.getKey(), "diagramID")) {
-                                diagramID = child.getValue().toString();
-                                getDiagram(Integer.parseInt(diagramID));
-                            }
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.i("Post Retrieval Error", error.getMessage());
-                }
-            });
         } else {
-            Toast.makeText(getApplicationContext(), "Post id invalid", Toast.LENGTH_SHORT).show();
+            finish();
+        }
+        if(intent.hasExtra("postTitle")){
+            postTitle = intent.getStringExtra("postTitle");
+        } else {
+            finish();
+        }
+        if(intent.hasExtra("postAuthor")){
+            postAuthor = intent.getStringExtra("postAuthor");
+        } else {
+            finish();
+        }
+        if(intent.hasExtra("postBody")){
+            postBody = intent.getStringExtra("postBody");
+        } else {
+            finish();
+        }
+        if(intent.hasExtra("postDatetime")){
+            postDatetime = intent.getStringExtra("postDatetime");
+        } else {
+            finish();
+        }
+
+        Button commentBtn = findViewById(R.id.comment_button);
+        commentBtn.setOnClickListener(this);
+
+        TextView postTitleText = findViewById(R.id.title_textview);
+        TextView postDateText = findViewById(R.id.datetime_textview);
+        TextView postAuthorText = findViewById(R.id.author_textview);
+        TextView postBodyText = findViewById(R.id.content_textview);
+
+        postTitleText.setText(postTitle);
+        postDateText.setText(postDatetime);
+        postAuthorText.setText(postAuthor);
+        postBodyText.setText(postBody);
+
+
+        commentRv = findViewById(R.id.comments_recyclerview);
+        commentAdapter = new CommentRecyclerAdapter(this, commentList);
+        commentRv.setAdapter(commentAdapter);
+        commentRv.setLayoutManager(new LinearLayoutManager(this));
+        getRecentComment();
+    }
+
+    @Override
+    public void onClick(View view) {
+        Log.d("CommentActivity", "On Click Recieved");
+        switch (view.getId()) {
+            case R.id.comment_button:
+                Log.d("CommentActivity", "On Click Recieved - Make new Comment");
+                saveCommentMethod();
+                break;
+            default:
+                Log.d("CommentActivity", "On Click Recieved - Default");
+                break;
         }
     }
 
-    public void getDiagram(int diagramID) {
-        db.child("diagrams").child(Integer.toString(diagramID)).child("diagram").addListenerForSingleValueEvent(new ValueEventListener() {
+    public void getRecentComment() {
+        db.child("postID").child(Integer.toString(postIdInt)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                ArrayList<String> drawingCommands;
-                drawingCommands = new ArrayList<>();
+                int maxInt = 0;
                 if (snapshot.exists()) {
                     for (DataSnapshot child : snapshot.getChildren()) {
-                        drawingCommands.add(child.getValue().toString());
+                        Comment tempComment = new Comment();
+                        tempComment.commentId = child.child("commentID").getValue(String.class);
+                        tempComment.comment_body = child.child("body").getValue(String.class);
+                        tempComment.author = child.child("author").getValue(String.class);
+                        tempComment.dateTime = child.child("dateTime").getValue(String.class);
+                        commentList.add(tempComment);
                     }
-                    Canvas canvas = new Canvas(findViewById(R.id.post_imageview));
-                    for (String ds: drawingCommands) {
-                        String[] d = ds.split(",");
-                        canvas.drawShape(Integer.parseInt(d[0]), Integer.parseInt(d[1]), d[2], d[3]);
-                    }
+                    commentAdapter.notifyDataSetChanged();
                 }
 
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.i("Post Retrieval Error", error.getMessage());
+                Log.i("Diagram Save Error", error.getMessage());
             }
         });
+
     }
+    public void saveCommentMethod(){
+        //LayoutInflater layoutInflater = LayoutInflater.from(this);
+        //View view = layoutInflater.inflate(com.neu.numad23sp_blakekoontz.R.layout.add_link, null);
+        AlertDialog.Builder alertDialogBuild = new AlertDialog.Builder(this);
+        alertDialogBuild.setTitle("Comment");
+        alertDialogBuild.setMessage("Type your comment to a post");
+        commentBodyEditText = new EditText(this);
+        commentBodyEditText.setInputType(InputType.TYPE_CLASS_TEXT);
+        alertDialogBuild.setView(commentBodyEditText);
+
+        alertDialogBuild.setPositiveButton("Ok", ((dialogInterface, i) -> {
+            bodyStr = commentBodyEditText.getText().toString();
+            db.child("postID").child(Integer.toString(postIdInt)).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int maxInt = 0;
+                    if (snapshot.exists()) {
+                        for (DataSnapshot child : snapshot.getChildren()) {
+                            maxInt = Integer.parseInt(child.child("commentID").getValue(String.class));
+//                            Comment tempComment = new Comment();
+//                            tempComment.commentId = child.child("commentID").getValue(String.class);
+//                            tempComment.comment_body = child.child("body").getValue(String.class);
+//                            tempComment.author = child.child("author").getValue(String.class);
+//                            tempComment.dateTime = child.child("dateTime").getValue(String.class);
+//                            int currentID = Integer.parseInt(child.child(Integer.toString(commentIdInt)).child("commentID").getValue().toString());
+//                            if (currentID > maxInt) {
+//                                maxInt = currentID;
+//                            }
+//                            commentList.add(tempComment);
+                        }
+                    }
+                    commentIdInt = maxInt + 1;
+                    String comment_time = java.time.Clock.systemUTC().instant().toString();
+                    String comment_author = sharedpreferences.getString("userEmail", "DEFAULT");
+                    db.child("postID").child(Integer.toString(postIdInt)).child(Integer.toString(commentIdInt)).child("commentID").setValue(Integer.toString(commentIdInt));
+                    db.child("postID").child(Integer.toString(postIdInt)).child(Integer.toString(commentIdInt)).child("author").setValue(comment_author);
+                    db.child("postID").child(Integer.toString(postIdInt)).child(Integer.toString(commentIdInt)).child("body").setValue(bodyStr);
+                    db.child("postID").child(Integer.toString(postIdInt)).child(Integer.toString(commentIdInt)).child("dateTime").setValue(comment_time);
+                    Comment new_comment = new Comment(comment_author, bodyStr, Integer.toString(commentIdInt), comment_time);
+                    commentList.add(new_comment);
+                    commentAdapter.notifyDataSetChanged();
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.i("Diagram Save Error", error.getMessage());
+                }
+            });
+        }));
+        alertDialogBuild.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
+        dialog = alertDialogBuild.create();
+        dialog.show();
+    }
+
 }
