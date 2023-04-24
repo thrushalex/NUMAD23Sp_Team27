@@ -35,7 +35,7 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
 
 
     //commentId
-    private int commentIdInt;
+    private int commentIdInt = 1;
 
     //commentBody
     private EditText commentBodyEditText;
@@ -117,10 +117,12 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
         postAuthorText.setText(postAuthor);
         postBodyText.setText(postBody);
 
+
         commentRv = findViewById(R.id.comments_recyclerview);
         commentAdapter = new CommentRecyclerAdapter(this, commentList);
         commentRv.setAdapter(commentAdapter);
         commentRv.setLayoutManager(new LinearLayoutManager(this));
+        getRecentComment();
     }
 
     @Override
@@ -137,35 +139,31 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-//    public void getRecentComment() {
-//        db.child("comments").addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                int maxInt = 0;
-//                if (snapshot.exists()) {
-//                    for (DataSnapshot child : snapshot.getChildren()) {
-//                        int currentID = Integer.parseInt(child.child("commentID").getValue().toString());
-//                        if (currentID > maxInt) {
-//                            maxInt = currentID;
-//                        }
-//                    }
-//                }
-//                postID = maxInt + 1;
-//                db.child("posts").child(Integer.toString(postID)).child("postID").setValue(postID);
-//                db.child("posts").child(Integer.toString(postID)).child("author").setValue(sharedpreferences.getString("userEmail", "DEFAULT"));
-//                db.child("posts").child(Integer.toString(postID)).child("title").setValue(postTitle);
-//                db.child("posts").child(Integer.toString(postID)).child("body").setValue(postBody);
-//                db.child("posts").child(Integer.toString(postID)).child("diagramID").setValue(diagramID);
-//                db.child("posts").child(Integer.toString(postID)).child("dateTime").setValue(java.time.Clock.systemUTC().instant().toString());
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Log.i("Diagram Save Error", error.getMessage());
-//            }
-//        });
-//    }
+    public void getRecentComment() {
+        db.child("postID").child(Integer.toString(postIdInt)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                int maxInt = 0;
+                if (snapshot.exists()) {
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        Comment tempComment = new Comment();
+                        tempComment.commentId = child.child(Integer.toString(postIdInt)).child("commentID").getValue(String.class);
+                        tempComment.comment_body = child.child(Integer.toString(postIdInt)).child("body").getValue(String.class);
+                        tempComment.author = child.child(Integer.toString(postIdInt)).child("author").getValue(String.class);
+                        tempComment.dateTime = child.child(Integer.toString(postIdInt)).child("dateTime").getValue(String.class);
+                        commentList.add(tempComment);
+                    }
+                    commentAdapter.notifyDataSetChanged();
+                }
 
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("Diagram Save Error", error.getMessage());
+            }
+        });
+
+    }
     public void saveCommentMethod(){
         //LayoutInflater layoutInflater = LayoutInflater.from(this);
         //View view = layoutInflater.inflate(com.neu.numad23sp_blakekoontz.R.layout.add_link, null);
@@ -178,35 +176,41 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
 
         alertDialogBuild.setPositiveButton("Ok", ((dialogInterface, i) -> {
             bodyStr = commentBodyEditText.getText().toString();
-            db.child("comments").addListenerForSingleValueEvent(new ValueEventListener() {
+            db.child("postID").child(Integer.toString(postIdInt)).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     int maxInt = 0;
                     if (snapshot.exists()) {
                         for (DataSnapshot child : snapshot.getChildren()) {
-                            int currentID = Integer.parseInt(child.child("commentID").getValue().toString());
-                            if (currentID > maxInt) {
-                                maxInt = currentID;
-                            }
+                            maxInt = Integer.parseInt(child.child("commentID").getValue(String.class));
+//                            Comment tempComment = new Comment();
+//                            tempComment.commentId = child.child("commentID").getValue(String.class);
+//                            tempComment.comment_body = child.child("body").getValue(String.class);
+//                            tempComment.author = child.child("author").getValue(String.class);
+//                            tempComment.dateTime = child.child("dateTime").getValue(String.class);
+//                            int currentID = Integer.parseInt(child.child(Integer.toString(commentIdInt)).child("commentID").getValue().toString());
+//                            if (currentID > maxInt) {
+//                                maxInt = currentID;
+//                            }
+//                            commentList.add(tempComment);
                         }
                     }
                     commentIdInt = maxInt + 1;
                     String comment_time = java.time.Clock.systemUTC().instant().toString();
                     String comment_author = sharedpreferences.getString("userEmail", "DEFAULT");
-                    db.child("postID").child(Integer.toString(postIdInt)).child("commentID").setValue(Integer.toString(commentIdInt));
-                    db.child("postID").child(Integer.toString(postIdInt)).child("author").setValue(comment_author);
-                    db.child("postID").child(Integer.toString(postIdInt)).child("body").setValue(bodyStr);
-                    db.child("postID").child(Integer.toString(postIdInt)).child("dateTime").setValue(comment_time);
+                    db.child("postID").child(Integer.toString(postIdInt)).child(Integer.toString(commentIdInt)).child("commentID").setValue(Integer.toString(commentIdInt));
+                    db.child("postID").child(Integer.toString(postIdInt)).child(Integer.toString(commentIdInt)).child("author").setValue(comment_author);
+                    db.child("postID").child(Integer.toString(postIdInt)).child(Integer.toString(commentIdInt)).child("body").setValue(bodyStr);
+                    db.child("postID").child(Integer.toString(postIdInt)).child(Integer.toString(commentIdInt)).child("dateTime").setValue(comment_time);
                     Comment new_comment = new Comment(comment_author, bodyStr, Integer.toString(commentIdInt), comment_time);
                     commentList.add(new_comment);
+                    commentAdapter.notifyDataSetChanged();
                 }
-
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Log.i("Diagram Save Error", error.getMessage());
                 }
             });
-            commentAdapter.notifyDataSetChanged();
         }));
         alertDialogBuild.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
         dialog = alertDialogBuild.create();
