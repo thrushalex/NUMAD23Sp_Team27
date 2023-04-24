@@ -147,10 +147,10 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
                 if (snapshot.exists()) {
                     for (DataSnapshot child : snapshot.getChildren()) {
                         Comment tempComment = new Comment();
-                        tempComment.commentId = child.child(Integer.toString(postIdInt)).child("commentID").getValue(String.class);
-                        tempComment.comment_body = child.child(Integer.toString(postIdInt)).child("body").getValue(String.class);
-                        tempComment.author = child.child(Integer.toString(postIdInt)).child("author").getValue(String.class);
-                        tempComment.dateTime = child.child(Integer.toString(postIdInt)).child("dateTime").getValue(String.class);
+                        tempComment.commentId = child.child("commentID").getValue(String.class);
+                        tempComment.comment_body = child.child("body").getValue(String.class);
+                        tempComment.author = child.child("author").getValue(String.class);
+                        tempComment.dateTime = child.child("dateTime").getValue(String.class);
                         commentList.add(tempComment);
                     }
                     commentAdapter.notifyDataSetChanged();
