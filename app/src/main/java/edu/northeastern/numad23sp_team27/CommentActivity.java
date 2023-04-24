@@ -76,8 +76,8 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
         String postId;
         if(intent.hasExtra("postId")){
             postId = intent.getStringExtra("postId");
+            //Draw diagram
             getDiagramID(Integer.valueOf(postId));
-            //Toast.makeText(getApplicationContext(), "diagramID is: " + diagramID, Toast.LENGTH_SHORT).show();
             try{
                 postIdInt = Integer.parseInt(postId);
             } catch (Exception exception) {
@@ -222,14 +222,12 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
 
 
     public void getDiagramID(int postID){
-        Toast.makeText(getApplicationContext(), "postID " + Integer.toString(postID), Toast.LENGTH_SHORT).show();
         db.child("posts").child(Integer.toString(postID)).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     for (DataSnapshot child : snapshot.getChildren()) {
                         if (child.getKey().toString().equals("diagramID")) {
-                            Toast.makeText(getApplicationContext(), "Value " + child.getValue().toString(), Toast.LENGTH_SHORT).show();
                             getDiagram(Integer.valueOf(child.getValue().toString()));
                         }
                     }
