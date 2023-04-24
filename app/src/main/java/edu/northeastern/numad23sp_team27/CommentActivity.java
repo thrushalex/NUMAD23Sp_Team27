@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 import com.google.android.material.snackbar.Snackbar;
@@ -75,6 +76,8 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
         String postId;
         if(intent.hasExtra("postId")){
             postId = intent.getStringExtra("postId");
+            getDiagramID(Integer.valueOf(postId));
+            //Toast.makeText(getApplicationContext(), "diagramID is: " + diagramID, Toast.LENGTH_SHORT).show();
             try{
                 postIdInt = Integer.parseInt(postId);
             } catch (Exception exception) {
@@ -215,6 +218,55 @@ public class CommentActivity extends AppCompatActivity implements View.OnClickLi
         alertDialogBuild.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.cancel());
         dialog = alertDialogBuild.create();
         dialog.show();
+    }
+
+
+    public void getDiagramID(int postID){
+        Toast.makeText(getApplicationContext(), "postID " + Integer.toString(postID), Toast.LENGTH_SHORT).show();
+        db.child("posts").child(Integer.toString(postID)).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        if (child.getKey().toString().equals("diagramID")) {
+                            Toast.makeText(getApplicationContext(), "Value " + child.getValue().toString(), Toast.LENGTH_SHORT).show();
+                            getDiagram(Integer.valueOf(child.getValue().toString()));
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("Post Retrieval Error", error.getMessage());
+            }
+        });
+    }
+    public void getDiagram(int diagramID) {
+        db.child("diagrams").child(Integer.toString(diagramID)).child("diagram").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                ArrayList<String> drawingCommands;
+                drawingCommands = new ArrayList<>();
+                if (snapshot.exists()) {
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        drawingCommands.add(child.getValue().toString());
+                    }
+                    Canvas canvas = new Canvas(findViewById(R.id.post_imageview));
+                    for (String ds: drawingCommands) {
+                        String[] d = ds.split(",");
+                        canvas.drawShape(Integer.parseInt(d[0]), Integer.parseInt(d[1]), d[2], d[3]);
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.i("Post Retrieval Error", error.getMessage());
+            }
+        });
     }
 
 }
