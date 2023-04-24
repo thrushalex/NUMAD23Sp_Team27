@@ -41,4 +41,5 @@
     <string name="select_color">Select Color</string>
     <string name="select_shape">Select Shape</string>
     <string name="BtnDeleteAccount">Delete Account</string>
+    <string name="test">test</string>
 </resources>
