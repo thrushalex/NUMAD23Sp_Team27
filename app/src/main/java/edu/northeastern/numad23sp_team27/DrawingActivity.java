@@ -497,6 +497,8 @@ public class DrawingActivity extends AppCompatActivity implements View.OnTouchLi
                         }
                     }
                     if (diagramID != 0) {
+                        editor.putString("diagramID", Integer.toString(diagramID));
+                        editor.commit();
                         Log.i("drawing activity diagram id", Integer.toString(diagramID));
                         editor.putString(Integer.toString(diagramID), String.join("|", drawCommandsLog));
                         Log.i("join str",  String.join("|", drawCommandsLog));

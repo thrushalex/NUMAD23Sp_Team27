@@ -25,6 +25,7 @@
             android:name=".DrawingActivity"
             android:exported="false" />
         <activity
+            tools:ignore="Instantiatable"
             android:name=".ChangePasswordDialog"
             android:exported="false" />
         <activity
@@ -34,6 +35,7 @@
             android:name=".Forums"
             android:exported="false" />
         <activity
+            tools:ignore="Instantiatable"
             android:name=".UpdateNameEmailDialog"
             android:exported="false" />
         <activity
